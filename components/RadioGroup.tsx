@@ -38,9 +38,7 @@ const RadioGroup = (props: Props) => {
             <RightElements>
                 <Text>{props.helperText}</Text>
             </RightElements>
-            {selectedKey ? <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around' }}>
-                <Icon name="arrowdown" type="AntDesign"></Icon>
-            </View> : null}
+       
             <RightElements>
                 {
                     props.childComponents?.find(child => child.key === selectedKey || (!!child.defualt && !selectedKey))?.component

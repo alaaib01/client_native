@@ -25,7 +25,7 @@ const Dropdown = (props: Props) => {
 
             >
                 {props.childComponents?.map(child => {
-                    return <Picker.Item label={child.text} value={child.key} />
+                    return <Picker.Item key={child.key} label={child.text} value={child.key} />
                 })}
                 
             </Picker>

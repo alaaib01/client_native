@@ -18,10 +18,10 @@ export default RightElements
 
 const styles = StyleSheet.create({
     root: {
-        flex: 1, 
+        flex: 1,
         justifyContent: 'flex-start',
-         alignItems: 'flex-start', 
-         direction: 'rtl',
-         padding:15
+        alignItems: 'flex-start',
+        direction: 'rtl',
+        padding: 15
     }
 })

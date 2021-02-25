@@ -24,7 +24,7 @@ const HomeScreen = (props: IProps) => {
             </Header>
             <Content >
                 <RadioGroup key={'question1'} title={'שאלה שאלה'} subText={'test sub texta'} helperText={'asdjlkj aklsjdlkaj sdlkja slkd j'} childComponents={[{ key: "asd", defualt: true, component: <Text>Test 1</Text>, text: "test" }, { key: "asd2", component: <Text>Test 2</Text>, text: "test2" }]} />
-                <Dropdown key={'question1'} title={'שאלה שאלה'} subText={'test sub texta'} helperText={'asdjlkj aklsjdlkaj sdlkja slkd j'} childComponents={[{ key: "asd", defualt: true, component: <Text>Test 1</Text>, text: "test" }, { key: "asd2", component: <Text>Test 2</Text>, text: "test2" }]} />
+                <Dropdown key={'question2'} title={'שאלה שאלה'} subText={'test sub texta'} helperText={'asdjlkj aklsjdlkaj sdlkja slkd j'} childComponents={[{ key: "asd", defualt: true, component: <Text>Test 1</Text>, text: "test" }, { key: "asd2", component: <Text>Test 2</Text>, text: "test2" }]} />
             </Content>
         </Container>
     );
