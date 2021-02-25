@@ -1,38 +1,68 @@
-import { Content, H2, H3, Icon, Picker } from 'native-base'
-import React, { useState } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
-import { IBaseConditionalFormProps } from '../interfaces/BaseConditionalForm'
+import { Content, H2, H3, Icon, ListItem, Picker } from 'native-base'
+import React, { useEffect, useState } from 'react'
+import { SafeAreaView, StyleSheet, Text, View } from 'react-native'
+import FormComponentBuilder from '../addons/FormComponentBuilder'
+import { FORM_TYPES } from '../enums/FormTypes'
+import { IBaseConditionalFormProps, IFormComponent } from '../interfaces/BaseConditionalForm'
+import BaseFormComponent from './BaseFormComponent'
 import RightElements from './RightElements'
 
 interface Props extends IBaseConditionalFormProps {
-
+    placeHolder: string
 }
 
 const Dropdown = (props: Props) => {
-    const [electedValue, setSelectedValue] = useState('')
+    const [selectedValue, setSelectedValue] = useState<string>('')
+    const [selectedComponent, setSelectedComponent] = useState<JSX.Element | IFormComponent>()
+    const handleChangeValue = (val: string) => {
+        setSelectedValue(val)
+        if (props.setFormValue)
+            props.setFormValue({ [props.propName]: val })
+        const component = props.childComponents?.find(child => child.propName === val || (!!child.defualt && !selectedValue))
+        if (component?.type === FORM_TYPES.ELEMENT)
+            setSelectedComponent(component?.component)
+        else if (component?.component) {
+            const child: IFormComponent = component.component;
+            setSelectedComponent(FormComponentBuilder({ ...child }))
+        }
+
+    }
+    useEffect(() => {
+        return () => {
+            if (props.setFormValue && props.resetInUnmount)
+                props.setFormValue({ [props.propName]: null })
+        }
+    }, [])
     return (
-        <Content>
-            <RightElements>
-                <H2>{props.title}</H2>
-                <H3>{props.subText}</H3>
-            </RightElements>
+        <BaseFormComponent
+            title={props.title}
+            subText={props.subText}
+            helperText={props.helperText}
+            subChildren={
+                <RightElements>
+                    {selectedComponent}
+                </RightElements>
+            }>
 
             <Picker
                 mode="dropdown"
-                iosHeader="Select your SIM"
-                iosIcon={<Icon name="arrow-down" />}
-                style={{ width: undefined }}
+                iosHeader="נא לבחור תשובה"
+                selectedValue={selectedValue}
+                onValueChange={handleChangeValue}
+                iosIcon={<Icon name="down" type='AntDesign' />}
+                style={{ width: '100%', direction: 'rtl' }}
+                placeholder={props.placeHolder}
+                placeholderStyle={{ color: "#bfc6ea" }}
+                placeholderIconColor="#007aff"
 
             >
+
                 {props.childComponents?.map(child => {
-                    return <Picker.Item key={child.key} label={child.text} value={child.key} />
+                    return <Picker.Item key={child.propName} label={child.text} value={child.propName} />
                 })}
-                
+
             </Picker>
-            <RightElements>
-                <Text>{props.helperText}</Text>
-            </RightElements>
-        </Content>
+        </BaseFormComponent>
     )
 }
 

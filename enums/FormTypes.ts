@@ -1,0 +1,7 @@
+export enum FORM_TYPES{
+    RADIO_GROUP,
+    DROPDOWN,
+    CHECK_BOX,
+    TEXT_INPUT,
+    ELEMENT=1000
+}

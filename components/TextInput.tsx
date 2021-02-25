@@ -12,12 +12,10 @@ interface Props extends IBaseConditionalFormProps {
 
 }
 
-const RadioGroup = (props: Props) => {
-    console.log(props)
+const TextInput = (props: Props) => {
     const [selectedKey, setSelectedKey] = useState<String | number>('');
     const [selectedComponent, setSelectedComponent] = useState<JSX.Element | IFormComponent>()
     const handleSelectionChanged = (val: string | number, propName: string) => {
-        console.log(val, propName)
         setSelectedKey(propName)
         if (props.setFormValue)
             props.setFormValue({ [props.propName]: val })
@@ -28,41 +26,36 @@ const RadioGroup = (props: Props) => {
         }
         else if (component?.component) {
             const child: IFormComponent = component.component;
-            
             setSelectedComponent(FormComponentBuilder({ ...child }))
         }
 
     }
     useEffect(() => {
-
         return () => {
             if (props.setFormValue && props.resetInUnmount)
                 props.setFormValue({ [props.propName]: null })
         }
     }, [])
-    return (
-        <BaseFormComponent
-            title={props.title}
-            subText={props.subText}
-            helperText={props.helperText}
-            subChildren={
-                <RightElements>
-                    {selectedComponent}
-                </RightElements>
-            }>
 
-            {props.childComponents?.map(child => {
-                return <ListItem key={child.propName} onPress={() => handleSelectionChanged(child.value, child.propName)} style={styles.listItem}>
-                    <Radio selected={selectedKey === child.propName || (!!child.defualt && !selectedKey)} />
-                    <Text style={styles.listItemText}>{child.text}</Text>
-                </ListItem>
-            })}
-        </BaseFormComponent>
-
+    return (<BaseFormComponent
+        title={props.title}
+        subText={props.subText}
+        helperText={props.helperText}
+        subChildren={<RightElements>
+            {selectedComponent}
+        </RightElements>
+        }>
+        {props.childComponents?.map(child => {
+            return <ListItem key={child.propName} onPress={() => handleSelectionChanged(child.value, child.propName)} style={styles.listItem}>
+                <Radio selected={selectedKey === child.propName || (!!child.defualt && !selectedKey)} />
+                <Text style={styles.listItemText}>{child.text}</Text>
+            </ListItem>
+        })}
+    </BaseFormComponent>
     )
 }
 
-export default RadioGroup
+export default TextInput
 
 const styles = StyleSheet.create({
     listItem: {

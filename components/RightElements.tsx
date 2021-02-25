@@ -3,12 +3,13 @@ import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 
 interface Props {
-    children?: React.ReactNode
+    children?: React.ReactNode,
+    style?: object
 }
 
-const RightElements = ({ children }: Props) => {
+const RightElements = ({ children, style }: Props) => {
     return (
-        <Content contentContainerStyle={styles.root}>
+        <Content contentContainerStyle={{ ...styles.root, ...style }}>
             {children}
         </Content>
     )
@@ -22,6 +23,5 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start',
         alignItems: 'flex-start',
         direction: 'rtl',
-        padding: 15
     }
 })
