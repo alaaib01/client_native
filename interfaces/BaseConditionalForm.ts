@@ -1,46 +1,53 @@
 import { FORM_TYPES } from "../enums/FormTypes";
 
 interface IFormResult {
-    [key: string]: string | number | null
+    [key: string]: string | number | object | null
 }
-interface IFormElement {
-    element: JSX.Element
-}
-interface IFormChildComponent {
-    type: FORM_TYPES,
-    text: string,
-    defualt?: true,
-    value: string | number,
-    propName: string,
-    component: IFormComponent | JSX.Element
-    
-}
-interface IFormComponent {
-    type: FORM_TYPES,
-    propName: string,
-    title: string,
-    subText?: string,
+interface IFormControlBase {
+    resetInUnmount: boolean,
+    uid: string,
+    label?: string,
     helperText?: string,
-    resetInUnmount?: boolean,
-    childComponents: IFormChildComponent[],
+    title?: string,
     placeHolder?: string,
-    setFormValue?: (formValue: IFormResult) => void
+    subTitle?: string,
+    multiLine?: boolean
 }
 
-interface IBaseConditionalFormProps {
-    propName: string,
-    childComponents?: IFormChildComponent[],
-    title: string,
-    subText?: string,
-    helperText?: string,
-    resetInUnmount?: boolean
-    setFormValue?: (formValue: IFormResult) => void
+interface IFormControlChildren extends IFormControlBase {
+    componentId: string
+}
+interface IFormControlChildrenComponent extends IFormControlBase {
+    id: string,
+    component: IFormControl
+}
+interface IFormControl extends IFormControlBase {
+    type: FORM_TYPES,
+    childComponents: {
+        children: IFormControlChildren[]
+        components: IFormControlChildrenComponent[]
+    },
+    finalStep?: boolean
+}
+interface IFormControlProps extends IFormControlBase {
+    childComponents: {
+        children: IFormControlChildren[]
+        components: IFormControlChildrenComponent[]
+    }
+    finalStep?: boolean
+}
+
+interface IFormControlChildrenComponents {
+    children: IFormControlChildren[]
+    components: IFormControlChildrenComponent[]
 }
 
 export {
     IFormResult,
-    IBaseConditionalFormProps,
-    IFormComponent,
-    IFormChildComponent,
-    IFormElement
+    IFormControl,
+    IFormControlChildrenComponent,
+    IFormControlChildren,
+    IFormControlChildrenComponents,
+    IFormControlProps
+
 }

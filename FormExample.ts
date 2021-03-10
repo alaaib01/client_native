@@ -2,67 +2,147 @@ const FormExample = [
     {
         "type": 1,
         "resetInUnmount": false,
-        "propName": "dropDown",
+        "propName": "DropDownList1",
         "helperText": "helper Text",
-        "key": "key",
+        "uid": "uid1",
         "title": "title",
-        "subText": "sub text",
+        "subTitle": "sub text",
         "placeHolder": "asdasd",
-        "childComponents": [
-            {
-                "propName": "radioList",
-                "type": 0,
-                "component": {
-                    "type": 0,
+        "childComponents": {
+            "children": [
+                {
+                    "type": 1000,
                     "resetInUnmount": false,
-                    "propName": "radioListComp",
+                    "propName": "RadioSelect1",
                     "helperText": "helper Text",
-                    "key": "key",
+                    "uid": "uid9",
                     "title": "title",
-                    "subText": "sub text",
-                    "childComponents": [
-                        {
-                            "propName": "simpleText1",
-                            "type": 1000,
-                            "text": "SimpleText1",
-                            "value": 122,
-                            "component": {
-                                "type": 0,
-                                "resetInUnmount": false,
-                                "propName": "radioListComp",
-                                "helperText": "helper Text",
-                                "key": "key",
-                                "title": "title",
-                                "subText": "sub text",
-                                "childComponents": [{
-                                    "propName": "simpleText2",
-                                    "type": 1000,
-                                    "text": "SimpleText2",
-
-                                    "value": 123
-                                }]
-                            }
-                        },
-                        {
-                            "propName": "simpleText2",
-                            "type": 1000,
-                            "text": "SimpleText2",
-
-                            "value": 123
-                        }
-                    ]
+                    "subTitle": "sub text",
+                    "placeHolder": "asdasd",
+                    "label": "test1",
+                    "componentId": "2"
                 },
-                "text": "radiolstTxt",
-                "value": 1
-            },
-            {
-                "propName": "simpleText4",
-                "type": 1000,
-                "text": "SimpleText4",
-                "value": 2
-            },
-        ]
+                {
+                    "type": 1000,
+                    "resetInUnmount": false,
+                    "propName": "RadioSelect1",
+                    "helperText": "helper Text",
+                    "uid": "uid2",
+                    "title": "title",
+                    "subTitle": "sub text",
+                    "placeHolder": "asdasd",
+                    "label": "test2",
+                    "componentId": "1"
+                },
+            ],
+            "components": [
+                {
+                    id: "1",
+                    component: {
+                        "type": 0,
+                        "resetInUnmount": false,
+                        "propName": "DropDownList1",
+                        "helperText": "helper Text",
+                        "uid": "uid3",
+                        "title": "title",
+                        "subTitle": "sub text",
+                        "placeHolder": "asdasd",
+                        "childComponents": {
+                            "children": [
+                                {
+                                    "type": 1000,
+                                    "resetInUnmount": false,
+                                    "propName": "RadioSelect1",
+                                    "helperText": "helper Text",
+                                    "uid": "uid4",
+                                    "title": "title",
+                                    "subTitle": "sub text",
+                                    "placeHolder": "asdasd",
+                                    "label": "test1",
+                                    "componentId": "1"
+                                },
+                                {
+                                    "type": 1000,
+                                    "resetInUnmount": false,
+                                    "propName": "RadioSelect2",
+                                    "helperText": "helper Text",
+                                    "uid": "uid5",
+                                    "title": "title",
+                                    "subTitle": "sub text",
+                                    "placeHolder": "asdasd",
+                                    "label": "test2",
+                                    "componentId": "1"
+                                },
+                            ],
+                            components: [{
+                                "id": "1",
+                                "component": {
+                                    "type": 2,
+                                    "resetInUnmount": false,
+                                    "propName": "DropDownList1",
+                                    "helperText": "helper Text",
+                                    "uid": "uid6",
+                                    "title": "title",
+                                    "subTitle": "sub text",
+                                    "placeHolder": "asdasd",
+                                    "childComponents": {
+                                        "children": [
+                                            {
+                                                "type": 1000,
+                                                "resetInUnmount": false,
+                                                "propName": "RadioSelect1",
+                                                "helperText": "helper Text",
+                                                "uid": "uid7",
+                                                "title": "title",
+                                                "subTitle": "sub text",
+                                                "placeHolder": "asdasd",
+                                                "label": "test1",
+                                                "componentId": "1"
+                                            },
+                                            {
+                                                "type": 1000,
+                                                "resetInUnmount": false,
+                                                "propName": "RadioSelect2",
+                                                "helperText": "helper Text",
+                                                "uid": "uid8",
+                                                "title": "title",
+                                                "subTitle": "sub text",
+                                                "placeHolder": "asdasd",
+                                                "label": "test2",
+                                                "componentId": "1"
+                                            },
+                                        ],
+                                        "components": [{
+                                            "id": "1",
+                                            "type": 1000,
+                                            "resetInUnmount": false,
+                                            "propName": "DropDownList1",
+                                            "helperText": "helper Text",
+                                            "uid": "ui9",
+                                            "title": "title",
+                                            "subTitle": "sub text",
+                                            "placeHolder": "asdasd",
+                                        }]
+                                    }
+                                }
+                            }]
+                        }
+                    }
+                },
+                {
+                    id: '2', component: {
+                        "type": 1000,
+                        "resetInUnmount": false,
+                        "propName": "DropDownList1",
+                        "helperText": "helper Text",
+                        "uid": "ui9",
+                        "title": "title",
+                        "subTitle": "sub text",
+                        "placeHolder": "asdasd",
+                    }
+                }
+            ]
+        }
     }
 ]
-
 export default FormExample

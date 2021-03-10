@@ -4,7 +4,7 @@ import { DrawerNavigationState } from '@react-navigation/native'
 import { Text, Content, Badge } from 'native-base'
 import React from 'react'
 import { StyleSheet, Image } from 'react-native'
-import RightElements from '../components/RightElements'
+import RightElements from '../components/FormComponents/General/RightElements'
 import { useNetInfo } from '@react-native-community/netinfo';
 
 interface Props {
@@ -18,7 +18,7 @@ const CustomDrawer = (props: Props) => {
 
     return (
         <DrawerContentScrollView {...props}>
-            <Content>
+            <Content style={styles.profile}>
                 <Image source={require('../assets/avatar.png')} style={{ height: 200, width: null, flex: 1, }} />
                 <RightElements>
                     <Text>שם משתמש</Text>
@@ -40,4 +40,8 @@ const CustomDrawer = (props: Props) => {
 
 export default CustomDrawer
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+    profile: {
+
+    }
+})

@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { Platform, StyleSheet, Text, View } from 'react-native'
 import { Body, Button, Header as BaseHeader, Icon, Right, Title } from 'native-base'
 interface Props {
     title: string,
@@ -10,10 +10,12 @@ const Header = (props: Props) => {
     return (
         <View>
             <BaseHeader>
-                <Right>
+                {Platform.OS === "ios" ?
+                    <Right></Right> : null
 
-                </Right>
-                <Body>
+                }
+
+                <Body style={styles.root}>
                     <Title>{props.title}</Title>
                 </Body>
                 <Right>
@@ -28,4 +30,8 @@ const Header = (props: Props) => {
 
 export default Header
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+    root: {
+        padding: 15
+    }
+})

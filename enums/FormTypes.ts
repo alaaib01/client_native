@@ -3,5 +3,6 @@ export enum FORM_TYPES{
     DROPDOWN,
     CHECK_BOX,
     TEXT_INPUT,
+    IMAGE_UPLOADER,
     ELEMENT=1000
 }
