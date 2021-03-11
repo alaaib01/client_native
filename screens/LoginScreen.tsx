@@ -1,6 +1,7 @@
-import React, { Component, useState } from 'react';
+import React, { Component, useEffect, useState } from 'react';
 import { Constants } from 'expo'
-import { StyleSheet, Image, ImageBackground } from 'react-native'
+import { StyleSheet, Image, ImageBackground, ActivityIndicator } from 'react-native'
+import Spinner from 'react-native-loading-spinner-overlay';
 import {
     Container,
     Header,
@@ -15,6 +16,7 @@ import {
     View,
     Item,
     Icon,
+
 } from 'native-base';
 //@ts-ignore
 import backGroundImage from '../assets/image.png'
@@ -22,6 +24,8 @@ import backGroundImage from '../assets/image.png'
 import appLogo from '../assets/icon.png'
 import { useDispatch } from 'react-redux';
 import STORE_CONSTS from '../store/Consts';
+import { getValueFor, saveValue } from '../secureStorage/helpers';
+import { COLORS } from '../constants/Colors';
 interface Props {
 
 }
@@ -29,12 +33,36 @@ interface Props {
 const LoginScreen = (props: Props) => {
     const [username, setUsername] = useState<string>();
     const [password, setPassword] = useState<string>();
+    const [loading, setLoading] = useState(false)
     const dispatch = useDispatch();
+    useEffect(() => {
+        getValueFor('user').then(user => {
+            dispatch({ type: STORE_CONSTS.USER.ACTIONS.LOGIN, payload: { ...user } })
+        });
+
+    }, [])
     const login = () => {
-        dispatch({ type: STORE_CONSTS.USER.ACTIONS.LOGIN, payload: { username: username, password: password } })
+        {
+            setLoading(true)
+            saveValue('user', {
+                username: username,
+                password: password,
+                project: 2,
+            })
+            dispatch({ type: STORE_CONSTS.USER.ACTIONS.LOGIN, payload: { username: username, password: password } })
+            setLoading(false)
+
+        }
     }
     return (
         <Container >
+            <Spinner
+                visible={loading}
+                textContent={'טוען'}
+                textStyle={{ color: "#fff" }}
+                overlayColor={"#5CD3AD9C"}
+                size='large'
+            />
             <ImageBackground source={backGroundImage} style={styles.image}>
                 <View style={{ flex: 1, margin: '5%', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end' }}>
                     <Image source={appLogo} style={styles.logo} />

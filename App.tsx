@@ -10,7 +10,6 @@ import { initApp,  getForms } from './init';
 export default function App() {
   useEffect(() => {
     initApp().then(() => {
-      getForms();
     });
 
   }, [])

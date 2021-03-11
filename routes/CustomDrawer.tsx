@@ -3,7 +3,7 @@ import { DrawerNavigationHelpers, DrawerDescriptorMap } from '@react-navigation/
 import { DrawerNavigationState } from '@react-navigation/native'
 import { Text, Content, Badge } from 'native-base'
 import React from 'react'
-import { StyleSheet, Image } from 'react-native'
+import { StyleSheet, Image, View } from 'react-native'
 import RightElements from '../components/FormComponents/General/RightElements'
 import { useNetInfo } from '@react-native-community/netinfo';
 
@@ -19,18 +19,22 @@ const CustomDrawer = (props: Props) => {
     return (
         <DrawerContentScrollView {...props}>
             <Content style={styles.profile}>
-                <Image source={require('../assets/avatar.png')} style={{ height: 200, width: null, flex: 1, }} />
-                <RightElements>
-                    <Text>שם משתמש</Text>
-                    {
-                        netInfo.isConnected ?
-                            <Badge success>
-                                <Text>מצב מקוון</Text>
-                            </Badge> :
-                            <Badge danger>
-                                <Text>מצב לא מקוון</Text>
-                            </Badge>
-                    }
+                <Image square source={require('../assets/avatar.png')} style={{ height: 200, width: null, flex: 1, }} />
+                <RightElements style={{ paddingRight: 25 }}>
+                    <View style={{ padding: 15 }}>
+                        <Text>שם משתמש</Text>
+                    </View>
+                    <View style={{ padding: 15 }}>
+                        {
+                            netInfo.isConnected ?
+                                <Badge success>
+                                    <Text>מצב מקוון</Text>
+                                </Badge> :
+                                <Badge danger>
+                                    <Text>מצב לא מקוון</Text>
+                                </Badge>
+                        }
+                    </View>
                 </RightElements>
             </Content>
             <DrawerItemList {...props} />

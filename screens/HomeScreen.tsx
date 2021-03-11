@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import { NavigationContainer, } from '@react-navigation/native';
 import Header from '../components/Header';
@@ -9,6 +9,8 @@ import { createDrawerNavigator } from "@react-navigation/drawer";
 import LoginScreen from "./LoginScreen";
 import Form from "./FormScreen";
 import Calender from "../components/Calender/Calender";
+import { getForms } from "../init";
+import LoginForm from "../components/User/LoginForm";
 const Drawer = createDrawerNavigator();
 interface IProps {
 
@@ -17,10 +19,17 @@ interface IProps {
 function HomeScreen2() {
 
     return <Calender />
-  
-  }
+
+}
 const HomeScreen = (props: IProps) => {
     const user = useSelector(state => state.user);
+    useEffect(() => {
+        if (user.username) {
+            getForms();
+        }
+        return () => {
+        }
+    }, [user])
     if (user.username)
         return (
             <NavigationContainer>

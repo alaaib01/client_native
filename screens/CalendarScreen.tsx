@@ -8,9 +8,7 @@ interface Props {
 
 const CalendarScreen = (props: Props) => {
     return (
-    
             <Calender />
-   
     )
 }
 
