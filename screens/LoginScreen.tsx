@@ -41,16 +41,20 @@ const LoginScreen = (props: Props) => {
         });
 
     }, [])
+    
     const login = () => {
         {
-            setLoading(true)
-            saveValue('user', {
+            setLoading(false)
+            saveValue('user', JSON.stringify({
                 username: username,
                 password: password,
                 project: 2,
+            })).then(() => {
+                dispatch({ type: STORE_CONSTS.USER.ACTIONS.LOGIN, payload: { username: username, password: password } })
+                setLoading(false)
+            }).catch(err => {
+                console.log(err)
             })
-            dispatch({ type: STORE_CONSTS.USER.ACTIONS.LOGIN, payload: { username: username, password: password } })
-            setLoading(false)
 
         }
     }

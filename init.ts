@@ -12,7 +12,7 @@ async function initApp() {
 }
 
 const getForms = async () => {
-    const user = await getValueFor('user');
+    const user =JSON.parse(await getValueFor('user'));
 
     axios.get(`http://192.168.1.83:3001/forms/form/project/${user.project}`).then(async (data: { data: FormDTO[] }) => {
         const formData: FormDTO[] = data.data;

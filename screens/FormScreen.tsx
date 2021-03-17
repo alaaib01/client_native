@@ -8,9 +8,14 @@ import Error from '../components/Error/Error'
 import { IFormControl } from '../interfaces/BaseConditionalForm'
 import { COLORS } from '../constants/Colors'
 import { useSelector } from 'react-redux'
+import { ITaskSummaryData } from '../interfaces/Tasks'
+import TaskSummary from '../components/Task/TaskSummary'
+
+
 
 interface Props {
-
+    navigation: NavigationType,
+    route: { name: string, params: { task: ITaskSummaryData } }
 }
 
 const Form = (props: Props) => {
@@ -18,14 +23,18 @@ const Form = (props: Props) => {
     let [formData, setFormData] = useState<IFormControl[]>([]);
     const [error, setError] = useState(false)
 
+
+    console.log(props.route.params)
     const allowSave = useSelector(state => state?.form?.formValues?.allowSave) || { form: { formValues: { allowSave: false } } }
-    useSelector(state => console.log(state))
+
+
 
 
     useEffect(() => {
         try {
+
             const repository = getRepository(FormDB);
-            repository.findOne({ type: 123 }).then((form) => {
+            repository.findOne({ type: props.route.params.task.formType }).then((form) => {
                 if (form?.data)
                     setFormData(JSON.parse(form.data))
                 else
@@ -47,6 +56,7 @@ const Form = (props: Props) => {
     else
         return (
             <Content style={styles.root}>
+                <TaskSummary  {...props.route.params.task} hideBeginButton ></TaskSummary>
                 {
                     formData.map((formControl: IFormControl) => {
                         return <FormComponentBuilder

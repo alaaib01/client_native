@@ -3,7 +3,9 @@ import { StyleSheet } from 'react-native'
 import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body, Right, Grid, Col } from 'native-base';
 import RightElements from '../FormComponents/General/RightElements';
 import { ITaskSummaryData } from '../../interfaces/Tasks';
+import { CommonActions, useNavigation } from '@react-navigation/native';
 interface Props extends ITaskSummaryData {
+    hideBeginButton?: boolean 
 }
 
 const TaskSummary = (props: Props) => {
@@ -28,7 +30,17 @@ const TaskSummary = (props: Props) => {
             </CardItem>)
         }
     }
-
+    const navigator = useNavigation();
+    const navigateToTask = () => {
+        navigator.dispatch(
+            CommonActions.navigate({
+                name: 'משימה',
+                params: {
+                    task: props,
+                },
+            })
+        )
+    }
 
     return (
         <Card>
@@ -37,11 +49,13 @@ const TaskSummary = (props: Props) => {
                     {rightCol}
                 </Col>
                 <Col>
-                    {leftCol}  
-                     <Button primary>
-                        <Text>התחל</Text>
-                        <Icon active name="arrow-circle-left" type="FontAwesome5" />
-                    </Button>
+                    {leftCol}
+                    {!props.hideBeginButton ?
+                        <Button primary onPress={navigateToTask}>
+                            <Text>התחל</Text>
+                            <Icon active name="arrow-circle-left" type="FontAwesome5" />
+                        </Button> : null
+                    }
                 </Col>
             </Grid>
             <CardItem>
@@ -52,7 +66,7 @@ const TaskSummary = (props: Props) => {
 
                 </Body>
                 <Left>
-                 
+
                 </Left>
             </CardItem>
         </Card>

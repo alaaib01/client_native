@@ -1,6 +1,7 @@
 import React, { Component, useEffect, useState } from 'react'
 import { Calendar, DateObject, LocaleConfig } from 'react-native-calendars'
 import XDate from 'xdate'
+import { COLORS } from '../../constants/Colors';
 
 
 LocaleConfig.locales['he'] = {
@@ -34,13 +35,16 @@ const RangeCalendar = (props: IProps) => {
     const [fromDate, setFromDate] = useState<string>((new XDate(new Date())).addDays(1).toDateString())
     const [isFromDatePicked, setIsFromDatePicked] = useState(true)
     const [isToDatePicked, setIsToDatePicked] = useState(false)
+    const today = (new XDate(new Date())).toString('yyyy-MM-dd');
+    console.log(today)
     useEffect(() => {
         setMarkedDates(curr => {
-            return { ...curr, '2021-06-28': { marked: true, dotColor: '#000' } }
+            return { ...curr, ...props.dots }
         })
         return () => {
         }
-    }, [])
+    }, [props.dots])
+
     const clearAllSelectedDays = () => {
         const tmp: IMarkedDates = {};
         for (let key in markedDates) {
@@ -60,49 +64,56 @@ const RangeCalendar = (props: IProps) => {
 
     }
     const setupMarkedDates = (toDate: string): number => {
-        let mFromDate = new XDate(fromDate)
-        let mToDate = new XDate(toDate)
-        let range = mFromDate.diffDays(mToDate)
-        let markedDatesObj = markedDates
-        if (range >= 0) {
-            if (range == 0) {
-                markedDatesObj[toDate] = { ...markedDatesObj[day.dateString], color: colors.theme.markColor, textColor: colors.theme.markTextColor }
-            } else {
-                for (var i = 1; i <= range; i++) {
-                    let tempDate = mFromDate.addDays(1).toString('yyyy-MM-dd')
-                    if (i < range) {
-                        markedDatesObj[tempDate] = { ...markedDatesObj[tempDate], color: colors.theme.markColor, textColor: colors.theme.markTextColor }
-                    } else {
-                        markedDatesObj[tempDate] = { ...markedDatesObj[tempDate], endingDay: true, color: colors.theme.markColor, textColor: colors.theme.markTextColor }
+        try {
+            let mFromDate = new XDate(fromDate)
+            let mToDate = new XDate(toDate)
+            let range = mFromDate.diffDays(mToDate)
+            let markedDatesObj = markedDates
+            if (range >= 0) {
+                if (range == 0) {
+                    markedDatesObj[toDate] = { ...markedDatesObj[day.dateString], color: colors.theme.markColor, textColor: colors.theme.markTextColor }
+                } else {
+                    for (var i = 1; i <= range; i++) {
+                        let tempDate = mFromDate.addDays(1).toString('yyyy-MM-dd')
+                        if (i < range) {
+                            markedDatesObj[tempDate] = { ...markedDatesObj[tempDate], color: colors.theme.markColor, textColor: colors.theme.markTextColor }
+                        } else {
+                            markedDatesObj[tempDate] = { ...markedDatesObj[tempDate], endingDay: true, color: colors.theme.markColor, textColor: colors.theme.markTextColor }
+                        }
                     }
+                    markedDatesObj[fromDate] = { ...markedDatesObj[fromDate], color: colors.theme.markColor, textColor: colors.theme.markTextColor, startingDay: true, endingDay: false }
                 }
-                markedDatesObj[fromDate] = { ...markedDatesObj[fromDate], color: colors.theme.markColor, textColor: colors.theme.markTextColor, startingDay: true, endingDay: false }
             }
-        }
-        setMarkedDates(markedDatesObj)
+            setMarkedDates(markedDatesObj)
 
-        return range
+            return range
+        } catch (e) {
+            return 0
+        }
     }
     const onDayPress = (day: DateObject): void => {
-
-        if (isFromDatePicked) {
-            setUpStartMarker(day)
-            props.selectedRangeCB((new XDate(fromDate)).addDays(1).toDate(), (new XDate(fromDate)).addDays(1).toDate())
-        } else if (isToDatePicked) {
-
-            let range = setupMarkedDates(day.dateString)
-            if (range >= 0) {
-                setIsFromDatePicked(true)
-                setIsToDatePicked(false)
-                setFromDate(day.dateString)
-            } else {
+        if (day)
+            if (isFromDatePicked) {
                 setUpStartMarker(day)
-            }
-            props.selectedRangeCB((new XDate(fromDate)).addDays(1).toDate(), (new XDate(fromDate)).addDays(range + 1).toDate())
+                props.selectedRangeCB((new XDate(day.dateString)).toDate(), (new XDate(day.dateString)).toDate())
+            } else if (isToDatePicked) {
 
-        }
+                let range = setupMarkedDates(day.dateString)
+                if (range >= 0) {
+                    setIsFromDatePicked(true)
+                    setIsToDatePicked(false)
+                    setFromDate(day.dateString)
+                    props.selectedRangeCB((new XDate(fromDate)).toDate(), (new XDate(fromDate).addDays(range)).toDate())
+                } else {
+                    setUpStartMarker(day)
+                    props.selectedRangeCB((new XDate(day.dateString)).toDate(), (new XDate(day.dateString)).toDate())
+                }
+
+
+            }
 
     }
+
     return <Calendar markingType={'period'}
         theme={{
             arrowStyle: {
@@ -115,7 +126,7 @@ const RangeCalendar = (props: IProps) => {
             }
         }}
         current={fromDate}
-        markedDates={markedDates || {}}
+        markedDates={{ [today]: { selected: true, color: COLORS.LIGHT.SUCCESS, startingDay: true, endingDay: true }, ...markedDates } || {}}
         onDayPress={onDayPress}
     />
 

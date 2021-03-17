@@ -11,6 +11,13 @@ const STORE_CONSTS = {
             LOGOUT: 'LOGOUT',
             GET_USER: 'GET_USER'
         }
+    },
+    TASK: {
+        ACTIONS: {
+            ADD_TASKS: 'ADD_TASK',
+            UPDATE_TASK: 'UPDATE_TASK',
+            REMOVE_TASK: 'REMOVE_TASK'
+        }
     }
 
 }
