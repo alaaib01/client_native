@@ -25,7 +25,6 @@ import appLogo from '../assets/icon.png'
 import { useDispatch } from 'react-redux';
 import STORE_CONSTS from '../store/Consts';
 import { getValueFor, saveValue } from '../secureStorage/helpers';
-import { COLORS } from '../constants/Colors';
 import axios, { AxiosRequestConfig } from 'axios';
 interface Props {
 
@@ -145,7 +144,6 @@ const styles = StyleSheet.create({
         color: '#4f4e4e'
     },
     btn: {
-        //borderRadius: 50,
         marginHorizontal: 4,
         backgroundColor: '#CFFFE4DB',
         width: '50%',
