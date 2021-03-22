@@ -3,9 +3,10 @@ import { useFonts } from 'expo-font';
 import React, { useEffect } from 'react';
 import AppLoading from 'expo-app-loading';
 import HomeScreen from './screens/HomeScreen';
-import { Provider, useSelector } from 'react-redux';
+import { Provider } from 'react-redux';
 import FormStore from './store/Stores/Store';
-import { initApp,  getForms } from './init';
+import { initApp } from './init';
+
 
 export default function App() {
   useEffect(() => {

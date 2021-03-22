@@ -2,7 +2,8 @@ interface ITaskSummaryData {
     data: { [key: string]: { label: string, value: string } },
     order: string[],
     date?: number,
-    formType?:number
+    formType?:number,
+    taskId:number
 }
 
 

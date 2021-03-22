@@ -6,6 +6,7 @@ import React from 'react'
 import { StyleSheet, Image, View } from 'react-native'
 import RightElements from '../components/FormComponents/General/RightElements'
 import { useNetInfo } from '@react-native-community/netinfo';
+import { useSelector } from 'react-redux'
 
 interface Props {
     state: DrawerNavigationState<Record<string, object | undefined>>;
@@ -15,14 +16,16 @@ interface Props {
 
 const CustomDrawer = (props: Props) => {
     const netInfo = useNetInfo();
-
+    const fullname = useSelector(state => {
+        return state.user.lastname + ' ' + state.user.firstname
+    });
     return (
         <DrawerContentScrollView {...props}>
             <Content style={styles.profile}>
                 <Image square source={require('../assets/avatar.png')} style={{ height: 200, width: null, flex: 1, }} />
                 <RightElements style={{ paddingRight: 25 }}>
                     <View style={{ padding: 15 }}>
-                        <Text>שם משתמש</Text>
+                        <Text>{fullname}</Text>
                     </View>
                     <View style={{ padding: 15 }}>
                         {

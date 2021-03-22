@@ -36,13 +36,11 @@ const RangeCalendar = (props: IProps) => {
     const [isFromDatePicked, setIsFromDatePicked] = useState(true)
     const [isToDatePicked, setIsToDatePicked] = useState(false)
     const today = (new XDate(new Date())).toString('yyyy-MM-dd');
-    console.log(today)
     useEffect(() => {
         setMarkedDates(curr => {
             return { ...curr, ...props.dots }
         })
-        return () => {
-        }
+     
     }, [props.dots])
 
     const clearAllSelectedDays = () => {

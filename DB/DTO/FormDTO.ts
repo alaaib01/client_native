@@ -1,5 +1,8 @@
 
-
+export class FormDTOUpdate {
+    id: string;
+    updateDate: number;
+}
 export class FormDTO {
     id: string;
     formName: string;

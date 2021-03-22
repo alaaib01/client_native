@@ -23,17 +23,16 @@ const Dropdown = (props: Props) => {
             dispatch({ type: STORE_CONSTS.FORM.ACTIONS.ADD_PROP, payload: { allowSave: true } })
         }
         if (component) {
+
             setSelectedComponent(component)
         }
 
     }
     useEffect(() => {
         return () => {
-            if (props.resetInUnmount)
-                dispatch({ type: STORE_CONSTS.FORM.ACTIONS.REMOVE_PROP, payload: { 'key': props.uid } })
-            if (!!props.finalStep || true) {
-                dispatch({ type: STORE_CONSTS.FORM.ACTIONS.REMOVE_PROP, payload: { 'key': 'allowSave' } })
-            }
+            dispatch({ type: STORE_CONSTS.FORM.ACTIONS.REMOVE_PROP, payload: { 'key': props.uid } })
+            dispatch({ type: STORE_CONSTS.FORM.ACTIONS.REMOVE_PROP, payload: { 'key': 'allowSave' } })
+
         }
     }, [])
     return (
@@ -43,7 +42,7 @@ const Dropdown = (props: Props) => {
             helperText={props.helperText}
             subChildren={
                 <RightElements>
-                    {selectedComponent}
+                    {selectedValue === '-1000' ? null : selectedComponent}
                 </RightElements>
             }>
 
@@ -59,7 +58,7 @@ const Dropdown = (props: Props) => {
                 placeholderIconColor="#007aff"
 
             >
-
+                <Picker.Item key={'emptySelect'} label={''} value={'-1000'} />
                 {props.childComponents.children.map(child => {
                     return <Picker.Item key={child.uid} label={child.label || ''} value={child.uid} />
                 })}

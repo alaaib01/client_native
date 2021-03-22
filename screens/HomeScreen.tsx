@@ -10,7 +10,8 @@ import LoginScreen from "./LoginScreen";
 import Form from "./FormScreen";
 import Calender from "../components/Calender/Calender";
 import { getForms } from "../init";
-import LoginForm from "../components/User/LoginForm";
+import axios, { AxiosRequestConfig } from "axios";
+
 const Drawer = createDrawerNavigator();
 interface IProps {
 
@@ -22,15 +23,24 @@ function HomeScreen2() {
 
 }
 const HomeScreen = (props: IProps) => {
-    const user = useSelector(state => state.user);
+    const access_token = useSelector(state => {
+        return state.user.access_token
+    });
     useEffect(() => {
-        if (user.username) {
+        if (access_token) {
+            // Add a request interceptor
+            axios.interceptors.request.use(function (config: AxiosRequestConfig) {
+                config.headers.Authorization = `Bearer ${access_token}`;
+                return config;
+            });
             getForms();
+
         }
-        return () => {
-        }
-    }, [user])
-    if (user.username)
+     
+    }, [access_token])
+    
+
+    if (access_token)
         return (
             <NavigationContainer>
                 <Drawer.Navigator screenOptions={{

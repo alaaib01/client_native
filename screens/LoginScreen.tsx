@@ -26,37 +26,54 @@ import { useDispatch } from 'react-redux';
 import STORE_CONSTS from '../store/Consts';
 import { getValueFor, saveValue } from '../secureStorage/helpers';
 import { COLORS } from '../constants/Colors';
+import axios, { AxiosRequestConfig } from 'axios';
 interface Props {
 
 }
 
 const LoginScreen = (props: Props) => {
     const [username, setUsername] = useState<string>();
+    const [errorTxt, setErrorText] = useState<string>();
     const [password, setPassword] = useState<string>();
     const [loading, setLoading] = useState(false)
+    const [initializing, setInitializing] = useState(false)
     const dispatch = useDispatch();
-    useEffect(() => {
-        getValueFor('user').then(user => {
-            dispatch({ type: STORE_CONSTS.USER.ACTIONS.LOGIN, payload: { ...user } })
+    const initAxiosConfig = (access_token: string) => {
+        axios.interceptors.request.use(function (config: AxiosRequestConfig) {
+            config.headers.Authorization = `Bearer ${access_token}`;
+            return config;
         });
+    }
 
+    useEffect(() => {
+        let isMounted = true;
+        setInitializing(true)
+        getValueFor('access_token').then(access_token => {
+            dispatch({ type: STORE_CONSTS.USER.ACTIONS.LOGIN, payload: { access_token: access_token } })
+            initAxiosConfig(access_token || '')
+            if (isMounted) setInitializing(false)
+        });
+        return () => {
+            isMounted = false
+        }
     }, [])
-    
+
     const login = () => {
         {
-            setLoading(false)
-            saveValue('user', JSON.stringify({
-                username: username,
-                password: password,
-                project: 2,
-            })).then(() => {
-                dispatch({ type: STORE_CONSTS.USER.ACTIONS.LOGIN, payload: { username: username, password: password } })
+            setLoading(true)
+            axios.post('http://192.168.1.83:3005/auth/login', { user: { username: username, password: password } }).then((result) => {
+                dispatch({ type: STORE_CONSTS.USER.ACTIONS.LOGIN, payload: { ...result.data } })
                 setLoading(false)
+                saveValue('access_token', result.data.access_token)
+                initAxiosConfig(result.data.access_token)
             }).catch(err => {
-                console.log(err)
+                setLoading(false)
+                setErrorText("נסיון ההתחברות נכשל נא לנסות שוב ")
             })
-
         }
+    }
+    if (initializing) {
+        return <Text>loading</Text>
     }
     return (
         <Container >
@@ -80,6 +97,9 @@ const LoginScreen = (props: Props) => {
                     <Item rounded style={styles.inputContainer}>
                         <Icon style={styles.icon} active name='lock' type='FontAwesome5' />
                         <Input style={styles.text} placeholder={"סיסמה"} secureTextEntry={true} value={password} onChangeText={(txt) => setPassword(txt)} ></Input>
+                    </Item>
+                    <Item rounded style={styles.resultContainer}>
+                        <Text style={{ color: 'red', textAlign: 'right' }} >{errorTxt}</Text>
                     </Item>
                     <View style={{ padding: '5%', flexDirection: 'row', justifyContent: 'center' }}>
 
@@ -106,6 +126,13 @@ const styles = StyleSheet.create({
         marginVertical: 10,
         color: '#fff',
         backgroundColor: '#FFFFFFDB'
+    },
+    resultContainer: {
+        borderWidth: 0,
+        marginVertical: 10,
+        borderColor: 'transparent',
+
+        backgroundColor: 'transparent'
     },
     icon: {
 

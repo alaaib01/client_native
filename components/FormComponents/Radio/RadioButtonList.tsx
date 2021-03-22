@@ -29,8 +29,7 @@ const RadioGroup = (props: Props) => {
     }
     useEffect(() => {
         return () => {
-            if (props.resetInUnmount)
-                dispatch({ type: STORE_CONSTS.FORM.ACTIONS.REMOVE_PROP, payload: { 'key': props.uid } })
+            dispatch({ type: STORE_CONSTS.FORM.ACTIONS.REMOVE_PROP, payload: { 'key': props.uid } })
         }
     }, [])
     return (

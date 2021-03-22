@@ -30,14 +30,13 @@ const TextInput = (props: Props) => {
     }
     useEffect(() => {
         return () => {
-            if (props.resetInUnmount)
-                dispatch({ type: STORE_CONSTS.FORM.ACTIONS.REMOVE_PROP, payload: { 'key': props.uid } })
+            dispatch({ type: STORE_CONSTS.FORM.ACTIONS.REMOVE_PROP, payload: { 'key': props.uid } })
         }
     }, [])
 
     return (<BaseFormComponent
-        title={props.title }
-        subText={props.subTitle }
+        title={props.title}
+        subText={props.subTitle}
         helperText={props.helperText}
         subChildren={<RightElements>
             {selectedComponent}

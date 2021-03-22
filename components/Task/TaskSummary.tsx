@@ -14,7 +14,7 @@ const TaskSummary = (props: Props) => {
     for (let i = 0; i < props.order.length || i < Object.keys(props.data).length; i++) {
         const propName: string = props.order[i] || Object.keys(props.data)[i];
         if (!!(i % 2)) {
-            leftCol.push(<CardItem>
+            leftCol.push(<CardItem key={propName}>
                 <RightElements>
                     <Text>{props.data[propName].label}</Text>
                     <Text note>{props.data[propName].value}</Text>
@@ -22,7 +22,7 @@ const TaskSummary = (props: Props) => {
             </CardItem>)
         }
         else {
-            rightCol.push(<CardItem>
+            rightCol.push(<CardItem key={propName}>
                 <RightElements>
                     <Text>{props.data[propName].label}</Text>
                     <Text note>{props.data[propName].value}</Text>

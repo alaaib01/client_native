@@ -2,7 +2,7 @@ import axios from "axios";
 import { I18nManager } from "react-native";
 import { getRepository } from "typeorm";
 import { default as ConnectToLocalDB } from "./Data/sqliteConnection";
-import { FormDTO } from "./DB/DTO/FormDTO";
+import { FormDTO, FormDTOUpdate } from "./DB/DTO/FormDTO";
 import { Form } from "./DB/Entities/Forms.Entity";
 import { getValueFor } from "./secureStorage/helpers";
 
@@ -12,41 +12,33 @@ async function initApp() {
 }
 
 const getForms = async () => {
-    const user =JSON.parse(await getValueFor('user'));
 
-    axios.get(`http://192.168.1.83:3001/forms/form/project/${user.project}`).then(async (data: { data: FormDTO[] }) => {
-        const formData: FormDTO[] = data.data;
+    axios.get(`http://192.168.1.83:3005/forms`).then(async (data: { data: FormDTOUpdate[] }) => {
+        const formData: FormDTOUpdate[] = data.data;
         try {
             await formData.forEach(async form => {
                 const formRepository = getRepository(Form);
-                let oldForm = await formRepository.findOne(form.id);
-                if (!oldForm) {
-                    const f = new Form();
-                    f.createBy = form.createBy;
-                    f.data = JSON.stringify(form.data)
-                    f.id = form.id;
-                    f.type = form.type;
-                    f.formName = form.formName || '';
-                    f.createDate = form.createDate;
-                    f.updateDate = form.updateDate;
-                    f.updatedBy = form.updatedBy || '';
-                    f.project = form.project;
-                    await formRepository.save(f);
+                let oldForm = await formRepository.findOne(form.id) || new Form();;
+                if (!oldForm || oldForm?.updateDate != form.updateDate || !oldForm.id) {
+                    axios.get(`http://192.168.1.83:3005/form/${form.id}`).then(async (data: { data: FormDTO }) => {
+                        const f = data.data
+                        oldForm.data = JSON.stringify(f.data);
+                        oldForm.id = oldForm.id || f.id
+                        oldForm.createBy = f.createBy
+                        oldForm.createDate = f.createDate
+                        oldForm.formName = f.formName
+                        oldForm.project = f.project
+                        oldForm.type = f.type
+                        oldForm.updateDate = f.updateDate
+                        oldForm.updatedBy = f.updatedBy
+                        formRepository.save(oldForm).then(data => {
+                          
+                        }).catch(e => {
+                            console.log(e)
+                        });
+                    })
                 }
-                else if (oldForm?.updateDate != form.updateDate) {
-                    const f = new Form();
-                    f.createBy = form.createBy;
-                    f.data = JSON.stringify(form.data)
-                    f.id = form.id;
-                    f.type = form.type;
-                    f.formName = form.formName || '';
-                    f.createDate = form.createDate;
-                    f.updateDate = form.updateDate;
-                    f.updatedBy = form.updatedBy || '';
-                    f.project = form.project;
-                    oldForm = Object.assign(oldForm, f)
-                    await formRepository.save(oldForm);
-                }
+
             })
         } catch (e) {
             console.log(e)

@@ -3,6 +3,7 @@ const STORE_CONSTS = {
         ACTIONS: {
             ADD_PROP: 'ADD_PROP',
             REMOVE_PROP: 'REMOVE_PROP',
+            SET_TASK_ID: 'SET_TASK_ID'
         }
     },
     USER: {
