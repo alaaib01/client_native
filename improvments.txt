@@ -1,0 +1,10 @@
+-- allow task takeover when 2 users tries to handle the same task , prompt confirmation with task status 
+
+-- change the form object model 
+
+-- manage form page (check if there are new releases of existing forms , and allow force update )
+
+-- calender , (allow moving forword and prev based on range selection ) 
+
+
+

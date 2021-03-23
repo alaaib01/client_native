@@ -1,21 +1,33 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import 'reflect-metadata';
+import { useFonts } from 'expo-font';
+import React, { useEffect } from 'react';
+import AppLoading from 'expo-app-loading';
+import HomeScreen from './screens/HomeScreen';
+import { Provider } from 'react-redux';
+import FormStore from './store/Stores/Store';
+import { initApp } from './init';
+
 
 export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+  useEffect(() => {
+    initApp().then(() => {
+    });
+
+  }, [])
+  const [loaded] = useFonts({
+    Roboto: require('native-base/Fonts/Roboto.ttf'),
+    Roboto_medium: require('native-base/Fonts/Roboto_medium.ttf'),
+  });
+
+  if (loaded)
+
+    return (
+      <Provider store={FormStore}>
+        <HomeScreen />
+      </Provider>
+    );
+
+  else
+    return <AppLoading />
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
