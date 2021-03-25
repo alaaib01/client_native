@@ -1,10 +1,19 @@
 import STORE_CONSTS from "../Consts";
 
+interface IAction {
+    type: string;
+    payload: {
+        access_token: string;
+        firstname: string | undefined;
+        lastname: string | undefined
+    }
+}
+
 const INITIAL_STATE = {
     access_token: ''
 };
 
-const userReducer = (state = INITIAL_STATE, action) => {
+const userReducer = (state = INITIAL_STATE, action: IAction) => {
     switch (action.type) {
         case STORE_CONSTS.USER.ACTIONS.LOGIN:
             const newState = Object.assign(state, {

@@ -1,20 +1,34 @@
 import STORE_CONSTS from "../Consts";
 
-const INITIAL_STATE = {
+interface FormValues {
+    [key: string]: string
+}
+
+interface IAction {
+    type: string,
+    payload?: FormValues | number,
+    key: string
+}
+
+const INITIAL_STATE: { formValues: FormValues, taskId: number } = {
     formValues: {},
     taskId: -1
 };
 
-const formReducer = (state = INITIAL_STATE, action) => {
+
+const formReducer = (state = INITIAL_STATE, action: IAction) => {
     switch (action.type) {
         case STORE_CONSTS.FORM.ACTIONS.ADD_PROP:
-            state.formValues = { ...state.formValues, ...action.payload }
+            if (typeof action.payload === "object")
+                state.formValues = { ...state.formValues, ...action.payload }
             return state
         case STORE_CONSTS.FORM.ACTIONS.SET_TASK_ID:
-            state.taskId = action.payload
+            if (typeof action.payload === "number")
+                state.taskId = action.payload
             return state
         case STORE_CONSTS.FORM.ACTIONS.REMOVE_PROP:
-            delete state.formValues[action.payload.key]
+            if (typeof action.payload === "object" && action.payload.key)
+                delete state.formValues[action.payload.key]
             return state
         default:
             return state

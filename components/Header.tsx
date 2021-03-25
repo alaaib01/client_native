@@ -5,7 +5,11 @@ interface Props {
     title: string,
     toggleButton: any
 }
-
+/**
+ * App header component 
+ * @param props contains the title and toggle button function to show or hide the side nav bar 
+ * @returns 
+ */
 const Header = (props: Props) => {
     return (
         <View>
@@ -14,7 +18,6 @@ const Header = (props: Props) => {
                     <Right></Right> : null
 
                 }
-
                 <Body style={styles.root}>
                     <Title>{props.title}</Title>
                 </Body>

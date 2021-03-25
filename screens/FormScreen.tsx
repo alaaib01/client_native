@@ -1,109 +1,118 @@
-import { Button, Card, Col, Content, Grid, Row, Text, View } from 'native-base'
-import React, { useEffect, useState } from 'react'
-import { StyleSheet, } from 'react-native'
-import FormComponentBuilder from '../addons/FormComponentBuilder'
-import { Form as FormDB } from '../DB/Entities/Forms.Entity'
-import { getRepository } from 'typeorm'
-import Error from '../components/Error/Error'
-import { IFormControl } from '../interfaces/BaseConditionalForm'
-import { COLORS } from '../constants/Colors'
-import { useDispatch, useSelector } from 'react-redux'
-import { ITaskSummaryData } from '../interfaces/Tasks'
-import TaskSummary from '../components/Task/TaskSummary'
-import { CommonActions, useNavigation } from '@react-navigation/native'
-import STORE_CONSTS from '../store/Consts'
-
-
+import { Button, Card, Col, Content, Grid, Row, Text, View } from "native-base";
+import React, { useEffect, useState } from "react";
+import { StyleSheet } from "react-native";
+import FormComponentBuilder from "../addons/FormComponentBuilder";
+import { Form as FormDB } from "../DB/Entities/Forms.Entity";
+import { getRepository } from "typeorm";
+import Error from "../components/Error/Error";
+import { IFormControl } from "../interfaces/BaseConditionalForm";
+import { COLORS } from "../constants/Colors";
+import { useDispatch, useSelector } from "react-redux";
+import { ITaskSummaryData } from "../interfaces/Tasks";
+import TaskSummary from "../components/Task/TaskSummary";
+import { CommonActions, useNavigation } from "@react-navigation/native";
+import STORE_CONSTS from "../store/Consts";
 
 interface Props {
-    navigation: NavigationType,
-    route: { name: string, params: { task: ITaskSummaryData } }
+  navigation: NavigationType;
+  route: { name: string; params: { task: ITaskSummaryData } };
 }
 
 const Form = (props: Props) => {
-    const [loading, setLoading] = useState(true);
-    let [formData, setFormData] = useState<IFormControl[]>([]);
-    const [error, setError] = useState(false)
-    const dispatch = useDispatch();
+  const [loading, setLoading] = useState(true);
+  let [formData, setFormData] = useState<IFormControl[]>([]);
+  const [error, setError] = useState(false);
+  const dispatch = useDispatch();
 
-    if (!props.route.params || !props.route.params.task) {
-        const navigator = useNavigation();
-        navigator.dispatch(
-            CommonActions.navigate({
-                name: 'יומן',
+  // if agent press tasks without passing a task id redirect to calendar page
+  if (!props.route.params || !props.route.params.task) {
+    const navigator = useNavigation();
+    navigator.dispatch(
+      CommonActions.navigate({
+        name: "יומן",
+      })
+    );
+    return <View></View>;
+  }
+  // if form is ready to save
+  const allowSave = useSelector(
+    (state) => state?.form?.formValues?.allowSave
+  ) || { form: { formValues: { allowSave: false } } };
 
-            })
-        )
-        return <View></View>
+  // if task id changes reload form , and if component unmounted remove form values from redux
+  useEffect(() => {
+    try {
+      dispatch({
+        type: STORE_CONSTS.FORM.ACTIONS.SET_TASK_ID,
+        payload: props.route.params.task.taskId,
+      });
+      const repository = getRepository(FormDB);
+      repository
+        .findOne({ type: props.route.params.task.formType })
+        .then((form) => {
+          if (form?.data) setFormData(JSON.parse(form.data));
+          else setError(true);
+          setLoading(false);
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    } catch (ex) {
+      console.log(ex);
     }
-    const allowSave = useSelector(state => state?.form?.formValues?.allowSave) || { form: { formValues: { allowSave: false } } }
-    useEffect(() => {
-        try {
-            dispatch({ type: STORE_CONSTS.FORM.ACTIONS.SET_TASK_ID, payload: props.route.params.task.taskId })
-            const repository = getRepository(FormDB);
-            repository.findOne({ type: props.route.params.task.formType }).then((form) => {
-                if (form?.data)
-                    setFormData(JSON.parse(form.data))
-                else
-                    setError(true)
-                setLoading(false)
+    return () => {
+      setFormData([]);
+      dispatch({ type: STORE_CONSTS.FORM.ACTIONS.SET_TASK_ID, payload: -1 });
+    };
+  }, [props.route.params]);
 
-            }).catch(e => {
-                console.log(e)
-            })
-        } catch (ex) {
-            console.log(ex)
-        }
-        return () => {
-            setFormData([])
-            dispatch({ type: STORE_CONSTS.FORM.ACTIONS.SET_TASK_ID, payload: -1 })
-        }
-    }, [props.route.params])
+  // if form is still loading display only the task summary
+  if (loading)
+    return (
+      <Content style={styles.root}>
+        <TaskSummary {...props.route.params.task} hideBeginButton></TaskSummary>
+      </Content>
+    );
 
-    if (loading)
-        return <Content style={styles.root}>
-            <TaskSummary  {...props.route.params.task} hideBeginButton ></TaskSummary>
-        </Content>
+  // in case of error display error page
+  if (error) return <Error />;
+  else
+    return (
+      <Content style={styles.root}>
+        <TaskSummary {...props.route.params.task} hideBeginButton></TaskSummary>
+        <Card>
+          <Grid style={{ padding: 20 }}>
+            {formData.map((formControl: IFormControl) => {
+              return (
+                <FormComponentBuilder
+                  type={formControl.type}
+                  resetInUnmount={formControl.resetInUnmount}
+                  uid={formControl.uid}
+                  helperText={formControl.helperText}
+                  key={formControl.uid}
+                  title={formControl.title}
+                  multiLine={formControl.multiLine || false}
+                  subTitle={formControl.subTitle}
+                  childComponents={formControl.childComponents}
+                  finalStep={formControl.finalStep}
+                ></FormComponentBuilder>
+              );
+            })}
+          </Grid>
+        </Card>
+        {!!allowSave ? (
+          <Button style={{ backgroundColor: COLORS.main.SUCCESS }}>
+            <Text>שמור טופס</Text>
+          </Button>
+        ) : null}
+      </Content>
+    );
+};
 
-    if (error)
-        return <Error />
-    else
-        return (
-            <Content style={styles.root}>
-                <TaskSummary  {...props.route.params.task} hideBeginButton ></TaskSummary>
-                <Card>
-                    <Grid style={{ padding: 20 }}>
-                        {
-                            formData.map((formControl: IFormControl) => {
-                                return <FormComponentBuilder
-                                    type={formControl.type}
-                                    resetInUnmount={formControl.resetInUnmount}
-                                    uid={formControl.uid}
-                                    helperText={formControl.helperText}
-                                    key={formControl.uid}
-                                    title={formControl.title}
-                                    multiLine={formControl.multiLine || false}
-                                    subTitle={formControl.subTitle}
-                                    childComponents={formControl.childComponents}
-                                    finalStep={formControl.finalStep}
-                                ></FormComponentBuilder>
-
-                            })
-                        }
-                    </Grid>
-                </Card>
-                {!!allowSave ? <Button style={{ backgroundColor: COLORS.main.SUCCESS }} >
-                    <Text >שמור טופס</Text>
-                </Button> : null}
-
-            </Content>
-        )
-}
-
-export default Form
+export default Form;
 
 const styles = StyleSheet.create({
-    root: {
-        margin: 15
-    }
-})
+  root: {
+    margin: 15,
+  },
+});

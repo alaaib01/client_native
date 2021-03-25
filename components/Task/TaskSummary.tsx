@@ -11,6 +11,8 @@ interface Props extends ITaskSummaryData {
 const TaskSummary = (props: Props) => {
     const rightCol: JSX.Element[] = [];
     const leftCol: JSX.Element[] = [];
+    // create 2 columns to arrange data based on order if exsits 
+    // label and vlaue of each element is based on object value 
     for (let i = 0; i < props.order.length || i < Object.keys(props.data).length; i++) {
         const propName: string = props.order[i] || Object.keys(props.data)[i];
         if (!!(i % 2)) {
@@ -30,6 +32,8 @@ const TaskSummary = (props: Props) => {
             </CardItem>)
         }
     }
+
+    // navigate to selected task 
     const navigator = useNavigation();
     const navigateToTask = () => {
         navigator.dispatch(

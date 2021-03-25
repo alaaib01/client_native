@@ -9,7 +9,7 @@ export class FormRepository extends Repository<Form>{
     async createForm(formDTO: FormDTO): Promise<Form> {
         const { createBy, data, project, formName, type } = formDTO;
         const form: Form = new Form();
-        form.data = data;
+        form.data = typeof data === 'object' ? JSON.stringify(data) : data;
         form.createBy = createBy;
         form.createDate = Date.now();
         form.project = project;
@@ -20,7 +20,6 @@ export class FormRepository extends Repository<Form>{
 
 
     async updateForm(newForm: FormDTO, oldForm: Form): Promise<Form> {
-
         return await this.save({ ...oldForm, ...newForm, history })
     }
 }
