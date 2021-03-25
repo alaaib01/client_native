@@ -1,14 +1,7 @@
+import { FormValues, IAction } from "../../interfaces/stores/FormStore";
 import STORE_CONSTS from "../Consts";
 
-interface FormValues {
-    [key: string]: string
-}
 
-interface IAction {
-    type: string,
-    payload?: FormValues | number,
-    key: string
-}
 
 const INITIAL_STATE: { formValues: FormValues, taskId: number } = {
     formValues: {},

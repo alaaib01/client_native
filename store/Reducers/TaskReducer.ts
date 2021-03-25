@@ -1,3 +1,4 @@
+import { IAction } from "../../interfaces/stores/TaskStore";
 import { TaskDTO } from "../../interfaces/Tasks";
 import STORE_CONSTS from "../Consts";
 
@@ -5,10 +6,6 @@ const INITIAL_STATE: { tasks: TaskDTO[] } = {
     tasks: []
 };
 
-interface IAction {
-    payload: { tasks?: TaskDTO[], key?: string },
-    type: string
-}
 
 const taskReducer = (state = INITIAL_STATE, action: IAction) => {
     switch (action.type) {

@@ -1,13 +1,5 @@
+import { IAction } from "../../interfaces/stores/UserStore";
 import STORE_CONSTS from "../Consts";
-
-interface IAction {
-    type: string;
-    payload: {
-        access_token: string;
-        firstname: string | undefined;
-        lastname: string | undefined
-    }
-}
 
 const INITIAL_STATE = {
     access_token: ''
