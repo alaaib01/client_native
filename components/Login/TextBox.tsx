@@ -19,7 +19,7 @@ const TextBox = (props: Props) => {
   };
   return (
     <Item rounded style={styles.inputContainer}>
-      <Icon style={styles.icon} active={!!props.active} name={props.icon} type={props.iconType} />
+      <Icon style={styles.icon} active={!!props.active} name={props.icon} type={props.iconType?props.iconType : 'FontAwesome5'} />
       <Input
         style={styles.text}
         placeholder={props.placeHolder}
