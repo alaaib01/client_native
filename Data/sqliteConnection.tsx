@@ -14,7 +14,7 @@ const connect = async () => {
         //If you're not using migrations, you can delete these lines,
         //since the default is no migrations:
         migrations: [CreateFormsTable1615288284381],
-        migrationsRun: true,
+        migrationsRun: false,
 
         // If you're not using migrations also set this to true
         synchronize: false,

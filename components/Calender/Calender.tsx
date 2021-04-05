@@ -1,4 +1,4 @@
-import { Content } from 'native-base'
+import { Content, List, ListItem } from 'native-base'
 import React, { useEffect, useState } from 'react'
 import { StyleSheet, } from 'react-native'
 import Spinner from 'react-native-loading-spinner-overlay';
@@ -11,6 +11,7 @@ import { getTasksByUserId, getTasksMarksByUserId } from '../../axios/tasks/Tasks
 import { useDispatch, useSelector } from 'react-redux';
 import STORE_CONSTS from '../../store/Consts';
 import { COLORS } from '../../constants/Colors';
+import { FlatList } from 'react-native-gesture-handler';
 interface Props {
 
 }
@@ -18,7 +19,7 @@ interface Props {
 interface IDotMark { [key: string]: { marked: boolean, dotColor: string } }
 
 const Calender = (props: Props) => {
-    const [tasks, setTasks] = useState<JSX.Element[] | null>(null)
+    const tasks: TaskDTO[] = useSelector(state => state?.tasks?.tasks || [])
     const [dots, setDots] = useState<IDotMark>({});
     const [loading, setLoading] = useState(false);
     const dispatch = useDispatch();
@@ -40,8 +41,6 @@ const Calender = (props: Props) => {
 
     // load data from server 
     const dataHandler = (tasksList: TaskDTO[]) => {
-        const tmpTasks = tasksList.map(task => <TaskSummary key={`${task.id}`} {...task.data.taskSummary} taskId={task.id} formType={task.formType} ></TaskSummary>);
-        setTasks(tmpTasks);
         dispatch({ type: STORE_CONSTS.TASK.ACTIONS.ADD_TASKS, payload: { tasks: tasksList } })
         setLoading(false)
     }
@@ -52,6 +51,11 @@ const Calender = (props: Props) => {
         getTasksByUserId(startDate, endDate, dataHandler);
     }
 
+    const renderTask = (item: TaskDTO) => {
+        return <ListItem   key={`${item.id}`}>
+            <TaskSummary  {...item.data.taskSummary} taskId={item.id} formType={item.formType} ></TaskSummary>
+        </ListItem>
+    }
 
     const handleDateChange = (startDate: Date, endDate: Date | undefined): void => {
 
@@ -66,10 +70,12 @@ const Calender = (props: Props) => {
 
             size='large'
         />
-        {
-            tasks
-        }
-
+        <List>
+            {
+                tasks.map(task=>renderTask(task))
+            }
+        </List>
+        
     </Content>
 }
 export default Calender

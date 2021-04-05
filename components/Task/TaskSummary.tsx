@@ -1,11 +1,11 @@
 import React from 'react'
 import { StyleSheet } from 'react-native'
-import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body, Right, Grid, Col } from 'native-base';
+import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body, Right, Grid, Col, View } from 'native-base';
 import RightElements from '../FormComponents/General/RightElements';
 import { ITaskSummaryData } from '../../interfaces/Tasks';
 import { CommonActions, useNavigation } from '@react-navigation/native';
 interface Props extends ITaskSummaryData {
-    hideBeginButton?: boolean 
+    hideBeginButton?: boolean
 }
 
 const TaskSummary = (props: Props) => {
@@ -43,36 +43,27 @@ const TaskSummary = (props: Props) => {
     }
 
     return (
-        <Card>
-            <Grid>
-                <Col>
-                    {rightCol}
-                </Col>
-                <Col>
-                    {leftCol}
-                    {!props.hideBeginButton ?
-                        <Button primary onPress={navigateToTask}>
-                            <Text>התחל</Text>
-                            <Icon active name="arrow-circle-left" type="FontAwesome5" />
-                        </Button> : null
-                    }
-                </Col>
-            </Grid>
-            <CardItem>
-                <Right>
-
-                </Right>
-                <Body>
-
-                </Body>
-                <Left>
-
-                </Left>
-            </CardItem>
-        </Card>
+        <Grid style={styles.btn}>
+            <Col>
+                {rightCol}
+            </Col>
+            <Col>
+                {leftCol}
+                {!props.hideBeginButton ?
+                    <Button primary onPress={navigateToTask}>
+                        <Text>התחל</Text>
+                        <Icon active name="arrow-circle-left" type="FontAwesome5" />
+                    </Button> : null
+                }
+            </Col>
+        </Grid>
     )
 }
 
 export default TaskSummary
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+    btn: {
+        backgroundColor: '#fff'
+    }
+})

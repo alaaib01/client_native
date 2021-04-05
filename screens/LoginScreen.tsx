@@ -48,9 +48,14 @@ const LoginScreen = (props: Props) => {
         let isMounted = true;
         setInitializing(true)
         getValueFor('access_token').then(access_token => {
-            dispatch({ type: STORE_CONSTS.USER.ACTIONS.LOGIN, payload: { access_token: access_token } })
-            initAxiosConfig(access_token || '')
-            if (isMounted) setInitializing(false)
+
+            axios.post('http://192.168.1.83:3005/auth/refresh', { access_token: access_token }).then(result => {
+                dispatch({ type: STORE_CONSTS.USER.ACTIONS.LOGIN, payload: { access_token:result.data.access_token } })
+                initAxiosConfig(result.data.access_token  || '')
+                if (isMounted) setInitializing(false)
+            })
+
+
         });
         return () => {
             isMounted = false

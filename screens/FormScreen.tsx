@@ -12,6 +12,7 @@ import { ITaskSummaryData } from '../interfaces/Tasks'
 import TaskSummary from '../components/Task/TaskSummary'
 import { CommonActions, useNavigation } from '@react-navigation/native'
 import STORE_CONSTS from '../store/Consts'
+import axios from 'axios'
 
 
 
@@ -25,7 +26,20 @@ const Form = (props: Props) => {
     let [formData, setFormData] = useState<IFormControl[]>([]);
     const [error, setError] = useState(false)
     const dispatch = useDispatch();
+    const formValues = useSelector(state => state?.form?.formValues);
+    const saveForm = () => {
+        if (formValues) {
+            axios.post("http://192.168.1.83:3005/assetTask", formValues).then(res => {
+                if (res.data) {
+                    // remove task from store
+                    dispatch({ type: STORE_CONSTS.TASK.ACTIONS.REMOVE_TASK, payload: { key: props.route.params.task.taskId } })
+                }
+            }).catch(er => {
+                console.log(er)
+            })
+        }
 
+    }
     if (!props.route.params || !props.route.params.task) {
         const navigator = useNavigation();
         navigator.dispatch(
@@ -92,7 +106,7 @@ const Form = (props: Props) => {
                         }
                     </Grid>
                 </Card>
-                {!!allowSave ? <Button style={{ backgroundColor: COLORS.main.SUCCESS }} >
+                {!!allowSave ? <Button style={{ backgroundColor: COLORS.main.SUCCESS }} onPress={saveForm} >
                     <Text >שמור טופס</Text>
                 </Button> : null}
 
