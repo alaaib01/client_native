@@ -1,6 +1,7 @@
 import axios from "axios";
 import { I18nManager } from "react-native";
 import { getRepository } from "typeorm";
+import { SERVER_URL } from "./axios/Consts";
 import { default as ConnectToLocalDB } from "./Data/sqliteConnection";
 import { FormDTO, FormDTOUpdate } from "./DB/DTO/FormDTO";
 import { Form } from "./DB/Entities/Forms.Entity";
@@ -13,14 +14,14 @@ async function initApp() {
 
 const getForms = async () => {
 
-    axios.get(`http://192.168.1.83:3005/forms`).then(async (data: { data: FormDTOUpdate[] }) => {
+    axios.get(SERVER_URL+`/forms`).then(async (data: { data: FormDTOUpdate[] }) => {
         const formData: FormDTOUpdate[] = data.data;
         try {
             await formData.forEach(async form => {
                 const formRepository = getRepository(Form);
                 let oldForm = await formRepository.findOne(form.id) || new Form();;
                 if (!oldForm || oldForm?.updateDate != form.updateDate || !oldForm.id) {
-                    axios.get(`http://192.168.1.83:3005/form/${form.id}`).then(async (data: { data: FormDTO }) => {
+                    axios.get(`${SERVER_URL}/form/${form.id}`).then(async (data: { data: FormDTO }) => {
                         const f = data.data
                         oldForm.data = JSON.stringify(f.data);
                         oldForm.id = oldForm.id || f.id

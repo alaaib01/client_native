@@ -12,6 +12,8 @@ import { ITaskSummaryData } from "../interfaces/Tasks";
 import TaskSummary from "../components/Task/TaskSummary";
 import { CommonActions, useNavigation } from "@react-navigation/native";
 import STORE_CONSTS from "../store/Consts";
+import axios from "axios";
+import { SERVER_URL } from "../axios/Consts";
 
 interface Props {
   navigation: NavigationType;
@@ -39,6 +41,7 @@ const Form = (props: Props) => {
     (state) => state?.form?.formValues?.allowSave
   ) || { form: { formValues: { allowSave: false } } };
 
+  const formValues = useSelector(state=>state.form?.formValues)
   // if task id changes reload form , and if component unmounted remove form values from redux
   useEffect(() => {
     try {
@@ -65,6 +68,15 @@ const Form = (props: Props) => {
       dispatch({ type: STORE_CONSTS.FORM.ACTIONS.SET_TASK_ID, payload: -1 });
     };
   }, [props.route.params]);
+
+  //save form data 
+  const saveFormToServer = ()=>{
+    axios.post(`${SERVER_URL}/task`,{form:formValues}).then(res=>{
+        
+    }).catch(err=>{
+
+    })
+  }
 
   // if form is still loading display only the task summary
   if (loading)

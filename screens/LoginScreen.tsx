@@ -11,6 +11,7 @@ import STORE_CONSTS from "../store/Consts";
 import { getValueFor, saveValue } from "../secureStorage/helpers";
 import axios, { AxiosRequestConfig } from "axios";
 import TextBox from "../components/Login/TextBox";
+import { SERVER_URL } from "../axios/Consts";
 interface Props {}
 
 const LoginScreen = (props: Props) => {
@@ -33,7 +34,7 @@ const LoginScreen = (props: Props) => {
     // get access token from local storage
     getValueFor("access_token").then((access_token) => {
       axios
-        .post("http://192.168.1.83:3005/auth/refresh", { access_token })
+        .post(SERVER_URL+"/auth/refresh", { access_token })
         .then((result) => {
           dispatch({
             type: STORE_CONSTS.USER.ACTIONS.LOGIN,
@@ -56,7 +57,7 @@ const LoginScreen = (props: Props) => {
     {
       setLoading(true);
       axios
-        .post("http://192.168.1.83:3005/auth/login", {
+        .post(`${SERVER_URL}/auth/login`, {
           user: { username: username, password: password },
         })
         .then((result) => {
