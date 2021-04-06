@@ -41,7 +41,7 @@ const Form = (props: Props) => {
     (state) => state?.form?.formValues?.allowSave
   ) || { form: { formValues: { allowSave: false } } };
 
-  const formValues = useSelector(state=>state.form?.formValues)
+  const formValues = useSelector((state) => state.form?.formValues);
   // if task id changes reload form , and if component unmounted remove form values from redux
   useEffect(() => {
     try {
@@ -69,14 +69,20 @@ const Form = (props: Props) => {
     };
   }, [props.route.params]);
 
-  //save form data 
-  const saveFormToServer = ()=>{
-    axios.post(`${SERVER_URL}/task`,{form:formValues}).then(res=>{
-        
-    }).catch(err=>{
-
-    })
-  }
+  //save form data
+  // if saving form successfull then remove task from redux store , else 
+  // save task to offline and retry upload 
+  const saveFormToServer = () => {
+    axios
+      .post(`${SERVER_URL}/taskAsset`, { form: formValues })
+      .then((res) => {
+        dispatch({
+          type: STORE_CONSTS.TASK.ACTIONS.REMOVE_TASK,
+          payload: { key: props.route.params.task.taskId },
+        });
+      })
+      .catch((err) => {});
+  };
 
   // if form is still loading display only the task summary
   if (loading)
@@ -113,7 +119,10 @@ const Form = (props: Props) => {
           </Grid>
         </Card>
         {!!allowSave ? (
-          <Button style={{ backgroundColor: COLORS.main.SUCCESS }}>
+          <Button
+            style={{ backgroundColor: COLORS.main.SUCCESS }}
+            onPress={saveFormToServer}
+          >
             <Text>שמור טופס</Text>
           </Button>
         ) : null}
