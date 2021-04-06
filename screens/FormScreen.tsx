@@ -14,6 +14,7 @@ import { CommonActions, useNavigation } from "@react-navigation/native";
 import STORE_CONSTS from "../store/Consts";
 import axios from "axios";
 import { SERVER_URL } from "../axios/Consts";
+import { AssetResult } from "../DB/Entities/AssetResult.Entity";
 
 interface Props {
   navigation: NavigationType;
@@ -70,8 +71,8 @@ const Form = (props: Props) => {
   }, [props.route.params]);
 
   //save form data
-  // if saving form successfull then remove task from redux store , else 
-  // save task to offline and retry upload 
+  // if saving form successfull then remove task from redux store , else
+  // save task to offline and retry upload
   const saveFormToServer = () => {
     axios
       .post(`${SERVER_URL}/taskAsset`, { form: formValues })
@@ -81,7 +82,20 @@ const Form = (props: Props) => {
           payload: { key: props.route.params.task.taskId },
         });
       })
-      .catch((err) => {});
+      .catch((err) => {
+        const assetRepo = getRepository(AssetResult);
+        const assetResult = new AssetResult();
+        assetResult.taskId = props.route.params.task.taskId;
+        assetResult.updateDate = Date.now();
+        assetResult.createDate = Date.now();
+        assetResult.data = formValues;
+        assetResult.createBy = "";
+        assetResult.updatedBy = "";
+        assetRepo
+          .save(assetResult)
+          .then((res) => {})
+          .then((err) => {});
+      });
   };
 
   // if form is still loading display only the task summary
