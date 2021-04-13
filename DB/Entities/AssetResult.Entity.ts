@@ -1,12 +1,12 @@
-import { Entity, Column,PrimaryColumn } from 'typeorm'
+import { Entity, Column,PrimaryColumn ,PrimaryGeneratedColumn} from 'typeorm'
 import { BaseClass } from '../BaseClass'
 /**
  * @author alaa ibrahim
  * 
  */
-@Entity()
+@Entity('asset_results')
 export class AssetResult extends BaseClass {
-  @PrimaryColumn()
+  @PrimaryGeneratedColumn()
   id: string;
   @Column()
   data: string;

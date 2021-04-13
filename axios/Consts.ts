@@ -1,4 +1,4 @@
-const SERVER_URL = 'http://192.168.1.83:3005'
+const SERVER_URL = 'https://agents-nest-qa.metropolinet.co.il'
 const TASKS_END_POINTS = {
     GET_TASK_BY_ID: "/task/",
     CREATE_TASK: "/task/",

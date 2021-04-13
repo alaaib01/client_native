@@ -38,9 +38,7 @@ const Form = (props: Props) => {
     return <View></View>;
   }
   // if form is ready to save
-  const allowSave = useSelector(
-    (state) => state?.form?.formValues?.allowSave
-  ) || { form: { formValues: { allowSave: false } } };
+  const allowSave = useSelector((state) => state?.form?.formValues?.allowSave);
 
   const formValues = useSelector((state) => state.form?.formValues);
   // if task id changes reload form , and if component unmounted remove form values from redux
@@ -148,6 +146,6 @@ export default Form;
 
 const styles = StyleSheet.create({
   root: {
-    margin: 15,
+   
   },
 });

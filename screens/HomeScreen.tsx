@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-
 import { NavigationContainer } from "@react-navigation/native";
 import Header from "../components/Header";
 import CustomDrawer from "../routes/CustomDrawer";
@@ -10,6 +9,7 @@ import LoginScreen from "./LoginScreen";
 import Form from "./FormScreen";
 import { getForms } from "../init";
 import axios, { AxiosRequestConfig } from "axios";
+import TabsScreen from "./TabsScreen";
 
 const Drawer = createDrawerNavigator();
 interface IProps {}
@@ -56,7 +56,7 @@ const HomeScreen = (props: IProps) => {
         >
           <Drawer.Screen
             name="יומן"
-            component={CalendarScreen}
+            component={TabsScreen}
             options={{ headerShown: true }}
           />
           <Drawer.Screen 

@@ -4,11 +4,15 @@ import XDate from "xdate";
 import { CALENDAR_COLORS, HebrewConfig } from "../../constants/Calendar";
 import { COLORS } from "../../constants/Colors";
 import { IMarkedDates, IRangeCalenderProps } from "../../interfaces/Calendar";
-
+import { View } from "react-native";
+import { Subtitle, Text, Title } from "native-base";
+import RightElements from "../FormComponents/General/RightElements";
 LocaleConfig.locales["he"] = HebrewConfig;
 LocaleConfig.defaultLocale = "he";
 
 const RangeCalendar = (props: IRangeCalenderProps) => {
+  const [visibleCalendar, setVisibleCalender] = useState(props.visible);
+  const [dateRange, setDateRange] = useState(0);
   // dates marked with dots
   const [markedDates, setMarkedDates] = useState<IMarkedDates>(props.dots);
   // selected date from
@@ -32,6 +36,10 @@ const RangeCalendar = (props: IRangeCalenderProps) => {
     });
   }, [props.dots]);
 
+  useEffect(() => {
+    setVisibleCalender(props.visible);
+    console.log(props.visible);
+  }, [props.visible]);
   // clear all the selected marked dates
   const clearAllSelectedDays = () => {
     const tmp: IMarkedDates = {};
@@ -99,6 +107,7 @@ const RangeCalendar = (props: IRangeCalenderProps) => {
           }
           updateMarkedDatesObj(fromDate, true, false);
         }
+        setDateRange(range);
       }
       setMarkedDates(markedDatesObj);
       return range;
@@ -142,7 +151,7 @@ const RangeCalendar = (props: IRangeCalenderProps) => {
       }
   };
 
-  return (
+  return visibleCalendar ? (
     <Calendar
       markingType={"period"}
       theme={{
@@ -166,6 +175,13 @@ const RangeCalendar = (props: IRangeCalenderProps) => {
       }
       onDayPress={onDayPress}
     />
+  ) : (
+    <RightElements style={{ textAlign: "ceneter", padding: 15 }}>
+      <Title>
+        מתאריך :{new XDate(fromDate).toString("dd/MM/yyyy")} עד תאריך :{" "}
+        {new XDate(fromDate).addDays(dateRange).toString("dd/MM/yyyy")}
+      </Title>
+    </RightElements>
   );
 };
 

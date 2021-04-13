@@ -4,7 +4,7 @@ import { BaseClass } from '../BaseClass'
  * @author alaa ibrahim
  * 
  */
-@Entity()
+@Entity('form')
 export class Form extends BaseClass {
 
   @PrimaryColumn()
@@ -13,7 +13,7 @@ export class Form extends BaseClass {
   data: string;
   @Column()
   project: number;
-  @Column()
+  @Column({nullable:true})
   formName: string;
   @Column()
   type: number;

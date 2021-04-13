@@ -16,6 +16,7 @@ const FormComponentBuilder = (props: IFormControl) => {
                 title={props.title}
                 subTitle={props.subTitle}
                 helperText={props.helperText}
+                finalStep={props.finalStep}
                 placeHolder={props.placeHolder || ''}
                 resetInUnmount={props.resetInUnmount || true}
                 childComponents={props.childComponents} />
@@ -23,6 +24,7 @@ const FormComponentBuilder = (props: IFormControl) => {
             return <RadioGroup
                 uid={props.uid}
                 title={props.title}
+                finalStep={props.finalStep}
                 subTitle={props.subTitle}
                 helperText={props.helperText}
                 resetInUnmount={props.resetInUnmount || true}
@@ -30,6 +32,7 @@ const FormComponentBuilder = (props: IFormControl) => {
         case FORM_TYPES.CHECK_BOX:
             return <CheckBoxList
                 uid={props.uid}
+                finalStep={props.finalStep}
                 title={props.title}
                 subTitle={props.subTitle}
                 helperText={props.helperText}
@@ -39,6 +42,7 @@ const FormComponentBuilder = (props: IFormControl) => {
         case FORM_TYPES.TEXT_INPUT:
             return <TextInput
                 uid={props.uid}
+                finalStep={props.finalStep}
                 title={props.title}
                 subTitle={props.subTitle}
                 helperText={props.helperText}
@@ -49,6 +53,7 @@ const FormComponentBuilder = (props: IFormControl) => {
         case FORM_TYPES.IMAGE_UPLOADER:
             return <VideoImage
                 uid={props.uid}
+                finalStep={props.finalStep}
                 title={props.title}
                 subTitle={props.subTitle}
                 helperText={props.helperText}
@@ -57,7 +62,7 @@ const FormComponentBuilder = (props: IFormControl) => {
                 resetInUnmount={props.resetInUnmount || true}
                 childComponents={props.childComponents} />
         default:
-            return <Text>No Component matching {props.type} was found</Text>
+            return <Text></Text>
     }
 
 }

@@ -1,4 +1,4 @@
-import { Content } from "native-base";
+import { Content, Icon, Input, Item } from "native-base";
 import React, { useEffect, useState } from "react";
 import { StyleSheet } from "react-native";
 import Spinner from "react-native-loading-spinner-overlay";
@@ -11,15 +11,20 @@ import {
   getTasksByUserId,
   getTasksMarksByUserId,
 } from "../../axios/tasks/TasksRequests";
-import { useDispatch} from "react-redux";
+import { useDispatch } from "react-redux";
 import { COLORS } from "../../constants/Colors";
 import TASK_ACTIONS from "../../store/Actions/TaskActions";
 import { IDotMark } from "../../interfaces/Calendar";
 
-interface Props {}
+interface Props {
+  visible: boolean;
+  formTypes:number[]
+}
 
 const Calender = (props: Props) => {
   const [tasks, setTasks] = useState<JSX.Element[] | null>(null);
+  const [allTasks, setAllTasks] = useState<TaskDTO[] | undefined>();
+  const [filteredTasks, setFilteredTasks] = useState<TaskDTO[] | undefined>();
   const [dots, setDots] = useState<IDotMark>({});
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
@@ -47,7 +52,9 @@ const Calender = (props: Props) => {
 
   // load data from server
   const dataHandler = (tasksList: TaskDTO[]) => {
-    const tmpTasks = tasksList.map((task) => (
+    
+    const filtered = tasksList.filter(t=> props.formTypes.indexOf(t.formType)>=0)
+    const tmpTasks = filtered.map((task) => (
       <TaskSummary
         key={`${task.id}`}
         {...task.data.taskSummary}
@@ -57,6 +64,7 @@ const Calender = (props: Props) => {
     ));
     setTasks(tmpTasks);
     dispatch(TASK_ACTIONS.ADD_TASKS(tasksList));
+    setAllTasks(filtered);
     setLoading(false);
   };
 
@@ -72,15 +80,53 @@ const Calender = (props: Props) => {
   ): void => {
     getTasks(startDate, endDate || startDate);
   };
+
+  const mapTasksToComponents = (tasks: TaskDTO[]) => {
+    const tasksComponents =  tasks.map((task) => (
+      <TaskSummary
+        key={`${task.id}`}
+        {...task.data.taskSummary}
+        taskId={task.id}
+        formType={task.formType}
+      ></TaskSummary>
+    ));
+    return tasksComponents
+  };
+  const filterTasks = (text: string) => {
+    console.log(text);
+    if (!!text.trim()) {
+      const t = allTasks?.filter((task) => {
+        return !!task.formType.toString().includes(text);
+      });
+      const tmp = mapTasksToComponents(t || []);
+      setTasks(tmp);
+    } else {
+      const tmp = mapTasksToComponents(allTasks || []);
+      setTasks(tmp);
+    }
+  };
   return (
     <Content contentContainerStyle={styles.root}>
-      <RangeCalendar dots={dots} selectedRangeCB={handleDateChange} />
+      <RangeCalendar
+        visible={props.visible}
+        dots={dots}
+        selectedRangeCB={handleDateChange}
+      />
       <Spinner
         visible={loading}
         textContent={"טוען"}
         textStyle={{ color: "#fff" }}
         size="large"
       />
+      <Item>
+        <Input
+          placeholder="חיפוש"
+          onChangeText={filterTasks}
+          style={{ direction: "rtl", textAlign: "right" }}
+        />
+        <Icon name="search" />
+      </Item>
+
       {tasks}
     </Content>
   );

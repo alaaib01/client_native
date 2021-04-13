@@ -4,7 +4,7 @@ import { StyleSheet, Text, View } from 'react-native'
 
 interface Props {
     children?: React.ReactNode,
-    style?: object
+    style?: any
 }
 
 const RightElements = ({ children, style }: Props) => {

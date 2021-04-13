@@ -29,6 +29,12 @@ const Dropdown = (props: Props) => {
     if (component) {
       setSelectedComponent(component);
     }
+    if (props.childComponents.children.find((c) => c.uid === val)?.finalStep) {
+      dispatch({
+        type: STORE_CONSTS.FORM.ACTIONS.ADD_PROP,
+        payload: { allowSave: true },
+      });
+    }
   };
 
   return (

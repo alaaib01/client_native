@@ -45,12 +45,12 @@ const TextInput = (props: Props) => {
       subChildren={<RightElements>{selectedComponent}</RightElements>}
     >
       {!!props.multiLine ? (
-        <Textarea rowSpan={6} bordered placeholder={props.placeHolder} />
+        <Textarea rowSpan={6} bordered placeholder={props.placeHolder} style={{width:'100%'}} />
       ) : (
         <Input
           placeholder={props.placeHolder}
           label={props.title}
-          style={{ borderColor: "#a6a6a6", borderWidth: 1 }}
+          style={{ borderColor: "#a6a6a6", borderWidth: 1,width:'100%' }}
           textAlign="right"
           value={value}
           onChangeText={handleTextChange}
