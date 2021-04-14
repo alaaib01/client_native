@@ -15,6 +15,8 @@ import STORE_CONSTS from "../store/Consts";
 import axios from "axios";
 import { SERVER_URL } from "../axios/Consts";
 import { AssetResult } from "../DB/Entities/AssetResult.Entity";
+import * as Permissions from "expo-permissions";
+import * as FileSystem from "expo-file-system";
 
 interface Props {
   navigation: NavigationType;
@@ -26,7 +28,7 @@ const Form = (props: Props) => {
   let [formData, setFormData] = useState<IFormControl[]>([]);
   const [error, setError] = useState(false);
   const dispatch = useDispatch();
-
+  const filesData = new FormData();
   // if agent press tasks without passing a task id redirect to calendar page
   if (!props.route.params || !props.route.params.task) {
     const navigator = useNavigation();
@@ -68,12 +70,37 @@ const Form = (props: Props) => {
     };
   }, [props.route.params]);
 
+  const sendFile = async (f: { id: string; uri: string; fileName: string }) => {
+    try {
+      const fileInfo = await FileSystem.getInfoAsync(f.uri);
+      if (fileInfo.exists) {
+        let fileString = await FileSystem.readAsStringAsync(f.uri, {
+          encoding: FileSystem.EncodingType.Base64,
+        });
+        let base64String = "data:image/jpg;base64" + fileString;
+        filesData.append(f.id, base64String);
+        axios
+          .post(`${SERVER_URL}/upload`, {
+            form: formValues,
+            files: filesData,
+          })
+          .then((res) => {
+           
+          })
+          .catch((err) => {});
+      }
+    } catch (error) {
+      console.warn(error);
+      return null;
+    }
+  };
   //save form data
   // if saving form successfull then remove task from redux store , else
   // save task to offline and retry upload
-  const saveFormToServer = () => {
+
+  const saveFormToServer = async () => {
     axios
-      .post(`${SERVER_URL}/taskAsset`, { form: formValues })
+      .post(`${SERVER_URL}/saveTask`, { form: formValues })
       .then((res) => {
         dispatch({
           type: STORE_CONSTS.TASK.ACTIONS.REMOVE_TASK,
@@ -94,6 +121,9 @@ const Form = (props: Props) => {
           .then((res) => {})
           .then((err) => {});
       });
+    formValues.images.forEach(
+      (f: { id: string; uri: string; fileName: string }) => sendFile(f)
+    );
   };
 
   // if form is still loading display only the task summary
@@ -129,15 +159,17 @@ const Form = (props: Props) => {
               );
             })}
           </Grid>
+          {!!allowSave ? (
+            <View style={{ padding: 25 }}>
+              <Button
+                style={{ backgroundColor: COLORS.main.SUCCESS }}
+                onPress={saveFormToServer}
+              >
+                <Text>שמור טופס</Text>
+              </Button>
+            </View>
+          ) : null}
         </Card>
-        {!!allowSave ? (
-          <Button
-            style={{ backgroundColor: COLORS.main.SUCCESS }}
-            onPress={saveFormToServer}
-          >
-            <Text>שמור טופס</Text>
-          </Button>
-        ) : null}
       </Content>
     );
 };
@@ -145,7 +177,5 @@ const Form = (props: Props) => {
 export default Form;
 
 const styles = StyleSheet.create({
-  root: {
-   
-  },
+  root: {},
 });

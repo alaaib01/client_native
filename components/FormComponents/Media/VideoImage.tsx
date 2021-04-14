@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { StyleSheet } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { useState } from "react";
@@ -35,15 +35,15 @@ const VideoImage = (props: Props) => {
   if (!permission || permission.status !== "granted") {
     askForPermission();
   }
-
+  useEffect(() => {
+    valueChanged();
+  }, [image, videos]);
   const valueChanged = () => {
     dispatch({
       type: STORE_CONSTS.FORM.ACTIONS.ADD_PROP,
       payload: {
-        [props.uid]: {
-          videos: videos,
-          images: image,
-        },
+        videos: videos,
+        images: image,
       },
     });
     const component = GetComponentFromChildren(
@@ -97,7 +97,6 @@ const VideoImage = (props: Props) => {
       }
     );
     await saveMediaToDevice(result);
-    valueChanged();
   };
   const pickImageFromGalery = async () => {
     let result: ImagePicker.ImagePickerResult = await ImagePicker.launchImageLibraryAsync(
@@ -110,22 +109,16 @@ const VideoImage = (props: Props) => {
     );
 
     await getMediaFromDevice(result);
-    valueChanged();
   };
   return (
     <BaseFormComponent
-      value={[...videos, ...image]}
+      value={[...videos, ...image].length}
       finalStep={props.finalStep}
       uid={props.uid}
       title={props.title}
-      subText={props.subTitle}
-      helperText={props.helperText}
       subChildren={<RightElements>{selectedComponent}</RightElements>}
     >
       <View>
-        <RightElements>
-          <H3>תמונות</H3>
-        </RightElements>
         <View
           style={{
             flex: 1,
@@ -136,24 +129,19 @@ const VideoImage = (props: Props) => {
             flexDirection: "row",
           }}
         >
-          {image.length ? (
-            image.map((src) => {
-              return (
-                <Thumbnail
-                  square
-                  key={src.id || src.uri}
-                  source={{ uri: src.uri }}
-                  style={{ height: 150, width: 150, margin: 10 }}
-                />
-              );
-            })
-          ) : (
-            <Text>אין תמונות להצגה</Text>
-          )}
+          {image.length
+            ? image.map((src) => {
+                return (
+                  <Thumbnail
+                    square
+                    key={src.id || src.uri}
+                    source={{ uri: src.uri }}
+                    style={{ height: 150, width: 150, margin: 10 }}
+                  />
+                );
+              })
+            : null}
         </View>
-        <RightElements>
-          <H3>ווידאו</H3>
-        </RightElements>
         <View
           style={{
             flex: 1,
@@ -167,10 +155,11 @@ const VideoImage = (props: Props) => {
             videos.map((src) => {
               return <VidePlayer key={src.id || src.uri} videoSrc={src} />;
             })
-          ) : (
-            <Text>אין סרטונים להצגה</Text>
+          ) : videos.length || image.length ? null : (
+            <Text>אין מסמכים להצגה</Text>
           )}
         </View>
+
         <View style={styles.btnGroup}>
           <Button style={styles.btn} onPress={pickImage}>
             <Text>מצלמה</Text>

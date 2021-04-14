@@ -1,6 +1,6 @@
 import { Content, H2, H3, ListItem, Separator, Text, View } from "native-base";
 import React, { ReactNode, useEffect } from "react";
-import { StyleSheet } from "react-native";
+import { Dimensions, StyleSheet } from "react-native";
 import { useDispatch } from "react-redux";
 import STORE_CONSTS from "../../../store/Consts";
 import RightElements from "./RightElements";
@@ -18,6 +18,7 @@ interface Props {
 
 const BaseFormComponent = (props: Props) => {
   const dispatch = useDispatch();
+
   useEffect(() => {
     // if current value is not null and this step is a final step
     // then allow save button through store
@@ -26,9 +27,14 @@ const BaseFormComponent = (props: Props) => {
         type: STORE_CONSTS.FORM.ACTIONS.ADD_PROP,
         payload: { allowSave: true },
       });
+    } else if (!props.value && !!props.finalStep) {
+      dispatch({
+        type: STORE_CONSTS.FORM.ACTIONS.REMOVE_PROP,
+        payload: {  key: "allowSave"  },
+      });
     }
   }, [props.value]);
-  
+
   useEffect(() => {
     return () => {
       dispatch({
@@ -42,7 +48,7 @@ const BaseFormComponent = (props: Props) => {
     };
   }, []);
   return (
-    <Content style={{ marginVertical: 5 }}>
+    <Content style={{ marginVertical: 5, flexDirection: "row" }}>
       <RightElements>
         {props.title ? <H2>{props.title}</H2> : null}
         {props.subText ? <H3>{props.subText}</H3> : null}
@@ -52,8 +58,6 @@ const BaseFormComponent = (props: Props) => {
         {props.helperText ? <Text>{props.helperText}</Text> : null}
       </RightElements>
 
-      <Separator style={{ backgroundColor: "transparent" }}></Separator>
-      <View style={{ marginVertical: 5 }}></View>
       {props.subChildren}
     </Content>
   );

@@ -5,23 +5,14 @@ import Calender from "../components/Calender/Calender";
 
 interface Props {
   formTypes: number[];
+  setTabCount : (num:number)=>void
 }
 
 const CalendarScreen = (props: Props) => {
-  const [visible, setVisible] = useState(false);
   
   return (
     <View style={{ flex: 1 }}>
-      <Button
-        transparent
-        onPress={() => {
-          setVisible(!visible);
-        }}
-      >
-        <Icon name="calendar" />
-        <Text>הצג יומן</Text>
-      </Button>
-      <Calender formTypes={props.formTypes} visible={visible} />
+      <Calender setTabCount={props.setTabCount} formTypes={props.formTypes} />
     </View>
   );
 };

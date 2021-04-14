@@ -18,5 +18,4 @@ export interface IMarkedDates {
 export interface IRangeCalenderProps {
     dots: { [key: string]: { marked: boolean, dotColor: string } }
     selectedRangeCB: (startDate: Date, endDate: Date | undefined) => void
-    visible: boolean
 }

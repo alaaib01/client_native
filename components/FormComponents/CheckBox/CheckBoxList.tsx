@@ -1,4 +1,4 @@
-import { CheckBox, ListItem, Text } from "native-base";
+import { Body, CheckBox, ListItem, Text } from "native-base";
 import React, { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { useDispatch } from "react-redux";
@@ -55,16 +55,15 @@ const CheckBoxList = (props: Props) => {
     >
       {props.childComponents.children.map((child) => {
         return (
-          <ListItem
-            key={child.uid}
-            onPress={() => handleSelectionChanged(child.uid)}
-            style={styles.listItem}
-          >
+     
+          <ListItem  key={child.uid}  onPress={() => handleSelectionChanged(child.uid)}
+        >
             <CheckBox checked={selectedValue.indexOf(child.uid) >= 0} />
-            <View style={styles.listItemText}>
-              <Text> {child.label}</Text>
-            </View>
+            <Body>
+              <Text>{child.label}</Text>
+            </Body>
           </ListItem>
+           
         );
       })}
     </BaseFormComponent>

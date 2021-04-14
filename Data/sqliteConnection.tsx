@@ -3,7 +3,7 @@ import { AssetResult } from "../DB/Entities/AssetResult.Entity";
 import { Form } from "../DB/Entities/Forms.Entity";
 const connect = async () => {
   const options: ConnectionOptions = {
-    database: "agentsAppDB8756",
+    database: "agentsAppDB9801",
     driver: require('expo-sqlite'),
     entities: [
         Form,
@@ -14,9 +14,9 @@ const connect = async () => {
   };
   try {
     await getConnection(options.name).close();
-    return createConnection(options);
+    return await createConnection(options);
   } catch (error) {
-    return createConnection(options);
+    return await createConnection(options);
   }
 };
 

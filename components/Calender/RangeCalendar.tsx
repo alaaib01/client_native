@@ -5,13 +5,14 @@ import { CALENDAR_COLORS, HebrewConfig } from "../../constants/Calendar";
 import { COLORS } from "../../constants/Colors";
 import { IMarkedDates, IRangeCalenderProps } from "../../interfaces/Calendar";
 import { View } from "react-native";
-import { Subtitle, Text, Title } from "native-base";
+import { Button, Icon, Subtitle, Text, Title } from "native-base";
 import RightElements from "../FormComponents/General/RightElements";
 LocaleConfig.locales["he"] = HebrewConfig;
 LocaleConfig.defaultLocale = "he";
 
 const RangeCalendar = (props: IRangeCalenderProps) => {
-  const [visibleCalendar, setVisibleCalender] = useState(props.visible);
+  const [visibleCalendar, setVisibleCalender] = useState(false);
+
   const [dateRange, setDateRange] = useState(0);
   // dates marked with dots
   const [markedDates, setMarkedDates] = useState<IMarkedDates>(props.dots);
@@ -19,6 +20,8 @@ const RangeCalendar = (props: IRangeCalenderProps) => {
   const [fromDate, setFromDate] = useState<string>(
     new XDate(new Date()).addDays(1).toDateString()
   );
+  const [startDate,setStartDate] = useState('')
+  const [endDate,setEndDate] = useState('')
   // indecatis if the next click on date is from date or to date
   const [isFromDatePicked, setIsFromDatePicked] = useState(true);
 
@@ -36,10 +39,6 @@ const RangeCalendar = (props: IRangeCalenderProps) => {
     });
   }, [props.dots]);
 
-  useEffect(() => {
-    setVisibleCalender(props.visible);
-    console.log(props.visible);
-  }, [props.visible]);
   // clear all the selected marked dates
   const clearAllSelectedDays = () => {
     const tmp: IMarkedDates = {};
@@ -120,6 +119,7 @@ const RangeCalendar = (props: IRangeCalenderProps) => {
     if (day)
       if (isFromDatePicked) {
         // if from date picked (no from day selected )
+        setStartDate(new XDate(day.dateString).toString('dd/MM/yyyy'))
         setUpStartMarker(day);
         props.selectedRangeCB(
           new XDate(day.dateString).toDate(),
@@ -130,6 +130,8 @@ const RangeCalendar = (props: IRangeCalenderProps) => {
       else if (isToDatePicked) {
         // mark up range
         let range = setupMarkedDates(day.dateString);
+
+        setEndDate(new XDate(day.dateString).toString('dd/MM/yyyy'))
         // if range is gte 0
         if (range >= 0) {
           // next select will be from date
@@ -151,37 +153,63 @@ const RangeCalendar = (props: IRangeCalenderProps) => {
       }
   };
 
-  return visibleCalendar ? (
-    <Calendar
-      markingType={"period"}
-      theme={{
-        arrowStyle: {
-          direction: "ltr",
-          transform: [{ rotateX: "180deg" }, { rotateZ: "180deg" }],
-          flexDirection: "row-reverse",
-        },
-      }}
-      current={fromDate}
-      markedDates={
-        {
-          [today]: {
-            selected: true,
-            color: COLORS.LIGHT.SUCCESS,
-            startingDay: true,
-            endingDay: true,
-          },
-          ...markedDates,
-        } || {}
-      }
-      onDayPress={onDayPress}
-    />
-  ) : (
-    <RightElements style={{ textAlign: "ceneter", padding: 15 }}>
-      <Title>
-        מתאריך :{new XDate(fromDate).toString("dd/MM/yyyy")} עד תאריך :{" "}
-        {new XDate(fromDate).addDays(dateRange).toString("dd/MM/yyyy")}
-      </Title>
-    </RightElements>
+  if (visibleCalendar)
+    return (
+      <View>
+        <Button
+          transparent
+          onPress={() => {
+            setVisibleCalender((currentState) => !currentState);
+          }}
+        >
+          <Icon name="calendar" />
+          <Text>הצג יומן</Text>
+          <Text>
+            {startDate} - {endDate}
+          </Text>
+        </Button>
+
+        <Calendar
+          markingType={"period"}
+          theme={{
+            arrowStyle: {
+              direction: "ltr",
+              transform: [{ rotateX: "180deg" }, { rotateZ: "180deg" }],
+              flexDirection: "row-reverse",
+            },
+          }}
+          current={fromDate}
+          markedDates={
+            {
+              [today]: {
+                selected: true,
+                color: COLORS.LIGHT.SUCCESS,
+                startingDay: true,
+                endingDay: true,
+              },
+              ...markedDates,
+            } || {}
+          }
+          onDayPress={onDayPress}
+        />
+      </View>
+    );
+  return (
+    <View>
+      <Button
+        transparent
+        onPress={() => {
+          setVisibleCalender((currentState) => !currentState);
+        }}
+      >
+        <Icon name="calendar" />
+        <Text>הצג יומן</Text>
+        <Text>
+        {startDate} - {endDate}
+                </Text>
+      </Button>
+     
+    </View>
   );
 };
 

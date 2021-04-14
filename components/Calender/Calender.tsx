@@ -1,4 +1,4 @@
-import { Content, Icon, Input, Item } from "native-base";
+import { Button, Content, Icon, Input, Item, Text } from "native-base";
 import React, { useEffect, useState } from "react";
 import { StyleSheet } from "react-native";
 import Spinner from "react-native-loading-spinner-overlay";
@@ -15,27 +15,28 @@ import { useDispatch } from "react-redux";
 import { COLORS } from "../../constants/Colors";
 import TASK_ACTIONS from "../../store/Actions/TaskActions";
 import { IDotMark } from "../../interfaces/Calendar";
+import { v4 as uuidv4 } from 'uuid';
+
 
 interface Props {
-  visible: boolean;
-  formTypes:number[]
+  formTypes: number[];
+  setTabCount: (num: number) => void;
 }
 
 const Calender = (props: Props) => {
   const [tasks, setTasks] = useState<JSX.Element[] | null>(null);
   const [allTasks, setAllTasks] = useState<TaskDTO[] | undefined>();
-  const [filteredTasks, setFilteredTasks] = useState<TaskDTO[] | undefined>();
   const [dots, setDots] = useState<IDotMark>({});
   const [loading, setLoading] = useState(false);
-  const dispatch = useDispatch();
   const handleMarkList = (tasksList: TaskDTO[]) => {
     const tmpDots: IDotMark = {};
     tasksList.forEach((task) => {
-      tmpDots[new XDate(task.date).toString("yyyy-MM-dd")] = {
-        marked: true,
-        dotColor: COLORS.dark.ERROR,
-      };
+        tmpDots[new XDate(task.date).toString("yyyy-MM-dd")] = {
+          marked: true,
+          dotColor: COLORS.dark.ERROR,
+        };
     });
+ 
     setDots(tmpDots);
   };
   // init marked dates ,  and load this month tasks
@@ -52,18 +53,20 @@ const Calender = (props: Props) => {
 
   // load data from server
   const dataHandler = (tasksList: TaskDTO[]) => {
-    
-    const filtered = tasksList.filter(t=> props.formTypes.indexOf(t.formType)>=0)
+    const filtered = tasksList.filter(
+      (t) => props.formTypes.indexOf(t.formType) >= 0
+    );
+    props.setTabCount(filtered.length);
     const tmpTasks = filtered.map((task) => (
-      <TaskSummary
-        key={`${task.id}`}
+      <TaskSummary 
+        key={uuidv4()}
         {...task.data.taskSummary}
         taskId={task.id}
         formType={task.formType}
       ></TaskSummary>
     ));
     setTasks(tmpTasks);
-    dispatch(TASK_ACTIONS.ADD_TASKS(tasksList));
+    //dispatch(TASK_ACTIONS.ADD_TASKS(tasksList));
     setAllTasks(filtered);
     setLoading(false);
   };
@@ -82,7 +85,7 @@ const Calender = (props: Props) => {
   };
 
   const mapTasksToComponents = (tasks: TaskDTO[]) => {
-    const tasksComponents =  tasks.map((task) => (
+    const tasksComponents = tasks.map((task) => (
       <TaskSummary
         key={`${task.id}`}
         {...task.data.taskSummary}
@@ -90,7 +93,7 @@ const Calender = (props: Props) => {
         formType={task.formType}
       ></TaskSummary>
     ));
-    return tasksComponents
+    return tasksComponents;
   };
   const filterTasks = (text: string) => {
     console.log(text);
@@ -108,7 +111,6 @@ const Calender = (props: Props) => {
   return (
     <Content contentContainerStyle={styles.root}>
       <RangeCalendar
-        visible={props.visible}
         dots={dots}
         selectedRangeCB={handleDateChange}
       />

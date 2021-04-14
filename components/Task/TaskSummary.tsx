@@ -1,82 +1,94 @@
-import React from 'react'
-import { StyleSheet } from 'react-native'
-import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body, Right, Grid, Col } from 'native-base';
-import RightElements from '../FormComponents/General/RightElements';
-import { ITaskSummaryData } from '../../interfaces/Tasks';
-import { CommonActions, useNavigation } from '@react-navigation/native';
+import React from "react";
+import { StyleSheet } from "react-native";
+import {
+  Container,
+  Header,
+  Content,
+  Card,
+  CardItem,
+  Thumbnail,
+  Text,
+  Button,
+  Icon,
+  Left,
+  Body,
+  Right,
+  Grid,
+  Col,
+  Row,
+} from "native-base";
+import RightElements from "../FormComponents/General/RightElements";
+import { ITaskSummaryData } from "../../interfaces/Tasks";
+import { CommonActions, useNavigation } from "@react-navigation/native";
+import FormTypeToName from "../../constants/Forms";
 interface Props extends ITaskSummaryData {
-    hideBeginButton?: boolean 
+  hideBeginButton?: boolean;
 }
 
 const TaskSummary = (props: Props) => {
-    const rightCol: JSX.Element[] = [];
-    const leftCol: JSX.Element[] = [];
-    // create 2 columns to arrange data based on order if exsits 
-    // label and vlaue of each element is based on object value 
-    for (let i = 0; i < props.order.length || i < Object.keys(props.data).length; i++) {
-        const propName: string = props.order[i] || Object.keys(props.data)[i];
-        if (!!(i % 2)) {
-            leftCol.push(<CardItem key={propName}>
-                <RightElements>
-                    <Text>{props.data[propName].label}</Text>
-                    <Text note>{props.data[propName].value}</Text>
-                </RightElements>
-            </CardItem>)
-        }
-        else {
-            rightCol.push(<CardItem key={propName}>
-                <RightElements>
-                    <Text>{props.data[propName].label}</Text>
-                    <Text note>{props.data[propName].value}</Text>
-                </RightElements>
-            </CardItem>)
-        }
-    }
+  const rightCol: JSX.Element[] = [];
+  const leftCol: JSX.Element[] = [];
+  // navigate to selected task
+  const navigator = useNavigation();
+  const navigateToTask = () => {
+    navigator.dispatch(
+      CommonActions.navigate({
+        name: "משימה",
+        params: {
+          task: props,
+        },
+      })
+    );
+  };
 
-    // navigate to selected task 
-    const navigator = useNavigation();
-    const navigateToTask = () => {
-        navigator.dispatch(
-            CommonActions.navigate({
-                name: 'משימה',
-                params: {
-                    task: props,
-                },
-            })
-        )
-    }
+  // create 2 columns to arrange data based on order if exsits
+  // label and vlaue of each element is based on object value
+  for (
+    let i = 0;
+    i < props.order.length || i < Object.keys(props.data).length;
+    i++
+  ) {
+    const propName: string = props.order[i] || Object.keys(props.data)[i];
 
-    return (
-        <Card>
-            <Grid>
-                <Col>
-                    {rightCol}
-                </Col>
-                <Col>
-                    {leftCol}
-                    {!props.hideBeginButton ?
-                        <Button primary onPress={navigateToTask}>
-                            <Text>התחל</Text>
-                            <Icon active name="arrow-circle-left" type="FontAwesome5" />
-                        </Button> : null
-                    }
-                </Col>
-            </Grid>
-            <CardItem>
-                <Right>
+    leftCol.push(
+      <Row>
+        <Col style={{ flex: 1,alignItems:'flex-start'}}>
+          <Text>{props.data[propName].label}: </Text>
+        </Col>
+        <Col style={{ flex: 1 ,alignItems:'flex-start'}}>
+          <Text note>{props.data[propName].value}</Text>
+        </Col>
+      </Row>
+    );
+  }
 
-                </Right>
-                <Body>
+  return (
+    <Card>
+      <CardItem>
+        <RightElements>
+          <Grid>
+            <Col style={{flex:2}}>{leftCol}</Col>
+            <Col style={{flex:1,justifyContent:'center'}}>
+              {!props.hideBeginButton ? (
+                <Button small primary transparent onPress={navigateToTask}>
+                  <Text>
+                    {FormTypeToName[props.formType?.toString() || "1"]}
+                  </Text>
+                </Button>
+              ) : null}
+            </Col>
+          </Grid>
+        </RightElements>
+      </CardItem>
+      <CardItem>
+        <Right></Right>
+        <Body></Body>
+        <Left></Left>
+      </CardItem>
+    </Card>
+  );
+};
 
-                </Body>
-                <Left>
+export default TaskSummary;
 
-                </Left>
-            </CardItem>
-        </Card>
-    )
-}
-
-export default TaskSummary
-
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({});

@@ -1,5 +1,6 @@
 import { Icon, Picker } from "native-base";
 import React, { useEffect, useState } from "react";
+import { Dimensions } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { IFormControlProps } from "../../../interfaces/BaseConditionalForm";
 import STORE_CONSTS from "../../../store/Consts";
@@ -10,8 +11,10 @@ import RightElements from "../General/RightElements";
 interface Props extends IFormControlProps {}
 
 const Dropdown = (props: Props) => {
-  const [selectedValue, setSelectedValue] = useState<string>("");
+  const [selectedValue, setSelectedValue] = useState<string|undefined>(undefined);
   const [selectedComponent, setSelectedComponent] = useState<JSX.Element>();
+  const screen = Dimensions.get('screen');
+
   const dispatch = useDispatch();
 
   /**
@@ -29,7 +32,8 @@ const Dropdown = (props: Props) => {
     if (component) {
       setSelectedComponent(component);
     }
-    if (props.childComponents.children.find((c) => c.uid === val)?.finalStep) {
+    const child = props.childComponents.children.find((c) => c.uid === val);
+    if (child?.finalStep) {
       dispatch({
         type: STORE_CONSTS.FORM.ACTIONS.ADD_PROP,
         payload: { allowSave: true },
@@ -54,11 +58,11 @@ const Dropdown = (props: Props) => {
       <Picker
         mode="dropdown"
         iosHeader="נא לבחור תשובה"
-        selectedValue={selectedValue || null}
+        selectedValue={selectedValue || undefined}
         onValueChange={handleChangeValue}
         iosIcon={<Icon name="down" type="AntDesign" />}
-        style={{ width: "100%", direction: "rtl" }}
-        placeholder={props.placeHolder}
+        style={{ width: screen.width*0.8} }
+        placeholder={'asdasdasd'}
         placeholderStyle={{ color: "#bfc6ea" }}
         placeholderIconColor="#007aff"
       >

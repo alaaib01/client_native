@@ -1,6 +1,6 @@
-import { Input, ListItem, Radio, Text, Textarea } from "native-base";
+import { Form, Input, ListItem, Radio, Text, Textarea } from "native-base";
 import React, { useEffect, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { Dimensions, StyleSheet, View } from "react-native";
 import FormComponentBuilder from "../../../addons/FormComponentBuilder";
 import { FORM_TYPES } from "../../../enums/FormTypes";
 import { IFormControlProps } from "../../../interfaces/BaseConditionalForm";
@@ -18,6 +18,8 @@ interface Props extends IFormControlProps {
 const TextInput = (props: Props) => {
   const [value, setValue] = useState<string>("");
   const [selectedComponent, setSelectedComponent] = useState<JSX.Element>();
+
+  const screen = Dimensions.get('screen');
   const dispatch = useDispatch();
   const handleTextChange = (val: string) => {
     dispatch({
@@ -45,12 +47,19 @@ const TextInput = (props: Props) => {
       subChildren={<RightElements>{selectedComponent}</RightElements>}
     >
       {!!props.multiLine ? (
-        <Textarea rowSpan={6} bordered placeholder={props.placeHolder} style={{width:'100%'}} />
+        <Form style={{width:'100%'}}>
+          <Textarea
+            rowSpan={6}
+            bordered
+            placeholder={props.placeHolder}
+            style={{  textAlign: "right", direction: "rtl" ,width:screen.width*0.8}}
+          />
+        </Form>
       ) : (
         <Input
           placeholder={props.placeHolder}
           label={props.title}
-          style={{ borderColor: "#a6a6a6", borderWidth: 1,width:'100%' }}
+          style={{ borderColor: "#a6a6a6", borderWidth: 1, width: "100%" }}
           textAlign="right"
           value={value}
           onChangeText={handleTextChange}
