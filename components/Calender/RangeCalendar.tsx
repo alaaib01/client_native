@@ -20,8 +20,13 @@ const RangeCalendar = (props: IRangeCalenderProps) => {
   const [fromDate, setFromDate] = useState<string>(
     new XDate(new Date()).addDays(1).toDateString()
   );
-  const [startDate,setStartDate] = useState('')
-  const [endDate,setEndDate] = useState('')
+  const [startDate, setStartDate] = useState(
+    new XDate(new Date()).toString("dd/MM/yyyy")
+  );
+
+  const [endDate, setEndDate] = useState(
+    new XDate(new Date()).addDays(7).toString("dd/MM/yyyy")
+  );
   // indecatis if the next click on date is from date or to date
   const [isFromDatePicked, setIsFromDatePicked] = useState(true);
 
@@ -119,7 +124,7 @@ const RangeCalendar = (props: IRangeCalenderProps) => {
     if (day)
       if (isFromDatePicked) {
         // if from date picked (no from day selected )
-        setStartDate(new XDate(day.dateString).toString('dd/MM/yyyy'))
+        setStartDate(new XDate(day.dateString).toString("dd/MM/yyyy"));
         setUpStartMarker(day);
         props.selectedRangeCB(
           new XDate(day.dateString).toDate(),
@@ -131,7 +136,7 @@ const RangeCalendar = (props: IRangeCalenderProps) => {
         // mark up range
         let range = setupMarkedDates(day.dateString);
 
-        setEndDate(new XDate(day.dateString).toString('dd/MM/yyyy'))
+        setEndDate(new XDate(day.dateString).toString("dd/MM/yyyy"));
         // if range is gte 0
         if (range >= 0) {
           // next select will be from date
@@ -165,7 +170,7 @@ const RangeCalendar = (props: IRangeCalenderProps) => {
           <Icon name="calendar" />
           <Text>הצג יומן</Text>
           <Text>
-            {startDate} - {endDate}
+            {endDate} - {startDate}
           </Text>
         </Button>
 
@@ -179,6 +184,8 @@ const RangeCalendar = (props: IRangeCalenderProps) => {
             },
           }}
           current={fromDate}
+          maxDate={new XDate(new Date()).addDays(40).toDate()}
+          minDate={new XDate(new Date()).addDays(-30).toDate()}
           markedDates={
             {
               [today]: {
@@ -205,10 +212,9 @@ const RangeCalendar = (props: IRangeCalenderProps) => {
         <Icon name="calendar" />
         <Text>הצג יומן</Text>
         <Text>
-        {startDate} - {endDate}
-                </Text>
+          {endDate} - {startDate}
+        </Text>
       </Button>
-     
     </View>
   );
 };

@@ -1,17 +1,13 @@
 import {
   Container,
-  Header,
   Tab,
   Tabs,
   TabHeading,
-  Icon,
   Text,
-  Badge,
 } from "native-base";
 import React, { useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet } from "react-native";
 import Calender from "../components/Calender/Calender";
-import CalendarScreen from "./CalendarScreen";
 
 interface Props {}
 

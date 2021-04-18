@@ -1,15 +1,10 @@
 import React from "react";
 import { StyleSheet } from "react-native";
 import {
-  Container,
-  Header,
-  Content,
   Card,
   CardItem,
-  Thumbnail,
   Text,
   Button,
-  Icon,
   Left,
   Body,
   Right,
@@ -70,7 +65,7 @@ const TaskSummary = (props: Props) => {
             <Col style={{flex:2}}>{leftCol}</Col>
             <Col style={{flex:1,justifyContent:'center'}}>
               {!props.hideBeginButton ? (
-                <Button small primary transparent onPress={navigateToTask}>
+                <Button small  onPress={navigateToTask}  bordered info>
                   <Text>
                     {FormTypeToName[props.formType?.toString() || "1"]}
                   </Text>

@@ -1,6 +1,6 @@
-import { Button, Content, Icon, Input, Item, Text } from "native-base";
+import { Button, Content, Icon, Input, Item, Picker, Text } from "native-base";
 import React, { useEffect, useState } from "react";
-import { StyleSheet } from "react-native";
+import { Dimensions, StyleSheet } from "react-native";
 import Spinner from "react-native-loading-spinner-overlay";
 import TaskSummary from "../Task/TaskSummary";
 import RangeCalendar from "./RangeCalendar";
@@ -15,8 +15,8 @@ import { useDispatch } from "react-redux";
 import { COLORS } from "../../constants/Colors";
 import TASK_ACTIONS from "../../store/Actions/TaskActions";
 import { IDotMark } from "../../interfaces/Calendar";
-import { v4 as uuidv4 } from 'uuid';
-
+import { v4 as uuidv4 } from "uuid";
+import FormTypeToName from "../../constants/Forms";
 
 interface Props {
   formTypes: number[];
@@ -28,15 +28,18 @@ const Calender = (props: Props) => {
   const [allTasks, setAllTasks] = useState<TaskDTO[] | undefined>();
   const [dots, setDots] = useState<IDotMark>({});
   const [loading, setLoading] = useState(false);
+  const [pickerArray, setPickerArray] = useState<JSX.Element[]>([]);
+  const [selectedFormType, setSelectedFormType] = useState(undefined);
+  const screen = Dimensions.get("screen");
   const handleMarkList = (tasksList: TaskDTO[]) => {
     const tmpDots: IDotMark = {};
     tasksList.forEach((task) => {
-        tmpDots[new XDate(task.date).toString("yyyy-MM-dd")] = {
-          marked: true,
-          dotColor: COLORS.dark.ERROR,
-        };
+      tmpDots[new XDate(task.date).toString("yyyy-MM-dd")] = {
+        marked: true,
+        dotColor: COLORS.dark.ERROR,
+      };
     });
- 
+
     setDots(tmpDots);
   };
   // init marked dates ,  and load this month tasks
@@ -46,9 +49,19 @@ const Calender = (props: Props) => {
     }, 60000);
     getTasks(
       new XDate(new Date()).toDate(),
-      new XDate(new Date()).addMonths(1).toDate()
+      new XDate(new Date()).addDays(7).toDate()
     );
     getTasksMarksByUserId(handleMarkList);
+    const typePicker = [];
+    for (const key in FormTypeToName) {
+      if (FormTypeToName.hasOwnProperty(key)) {
+        if (props.formTypes.indexOf(Number(key)) >= 0)
+          typePicker.push(
+            <Picker.Item key={key} label={FormTypeToName[key]} value={key} />
+          );
+      }
+    }
+    setPickerArray(typePicker);
   }, []);
 
   // load data from server
@@ -58,7 +71,7 @@ const Calender = (props: Props) => {
     );
     props.setTabCount(filtered.length);
     const tmpTasks = filtered.map((task) => (
-      <TaskSummary 
+      <TaskSummary
         key={uuidv4()}
         {...task.data.taskSummary}
         taskId={task.id}
@@ -96,7 +109,6 @@ const Calender = (props: Props) => {
     return tasksComponents;
   };
   const filterTasks = (text: string) => {
-    console.log(text);
     if (!!text.trim()) {
       const t = allTasks?.filter((task) => {
         return !!task.formType.toString().includes(text);
@@ -108,12 +120,23 @@ const Calender = (props: Props) => {
       setTasks(tmp);
     }
   };
+  const filterTasksByType = (text: string) => {
+    setSelectedFormType(text);
+    if (!!text.trim()) {
+      const t = allTasks?.filter((task) => {
+        return !!task.formType.toString().includes(text);
+      });
+      const tmp = mapTasksToComponents(t || []);
+      setTasks(tmp);
+    } else {
+      const tmp = mapTasksToComponents(allTasks || []);
+      setSelectedFormType(undefined);
+      setTasks(tmp);
+    }
+  };
   return (
     <Content contentContainerStyle={styles.root}>
-      <RangeCalendar
-        dots={dots}
-        selectedRangeCB={handleDateChange}
-      />
+      <RangeCalendar dots={dots} selectedRangeCB={handleDateChange} />
       <Spinner
         visible={loading}
         textContent={"טוען"}
@@ -128,7 +151,22 @@ const Calender = (props: Props) => {
         />
         <Icon name="search" />
       </Item>
+      <Item>
+        <Picker
+          mode="dropdown"
+          iosIcon={<Icon name="arrow-down" />}
+          placeholder="סוג משימה"
+          placeholderStyle={{ color: "#bfc6ea" }}
+          placeholderIconColor="#007aff"
+          style={{ width: screen.width - 15 }}
+          onValueChange={filterTasksByType}
+          selectedValue={selectedFormType}
+        >
+          <Picker.Item label={"ללא"} value={""} />
 
+          {pickerArray}
+        </Picker>
+      </Item>
       {tasks}
     </Content>
   );

@@ -1,4 +1,4 @@
-import { Icon, Picker } from "native-base";
+import { Icon, Item, Picker } from "native-base";
 import React, { useEffect, useState } from "react";
 import { Dimensions } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
@@ -11,9 +11,11 @@ import RightElements from "../General/RightElements";
 interface Props extends IFormControlProps {}
 
 const Dropdown = (props: Props) => {
-  const [selectedValue, setSelectedValue] = useState<string|undefined>(undefined);
+  const [selectedValue, setSelectedValue] = useState<string | undefined>(
+    undefined
+  );
   const [selectedComponent, setSelectedComponent] = useState<JSX.Element>();
-  const screen = Dimensions.get('screen');
+  const screen = Dimensions.get("screen");
 
   const dispatch = useDispatch();
 
@@ -55,28 +57,30 @@ const Dropdown = (props: Props) => {
         </RightElements>
       }
     >
-      <Picker
-        mode="dropdown"
-        iosHeader="נא לבחור תשובה"
-        selectedValue={selectedValue || undefined}
-        onValueChange={handleChangeValue}
-        iosIcon={<Icon name="down" type="AntDesign" />}
-        style={{ width: screen.width*0.8} }
-        placeholder={'asdasdasd'}
-        placeholderStyle={{ color: "#bfc6ea" }}
-        placeholderIconColor="#007aff"
-      >
-        <Picker.Item key={"emptySelect"} label={""} value={"-1000"} />
-        {props.childComponents.children.map((child) => {
-          return (
-            <Picker.Item
-              key={child.uid}
-              label={child.label || ""}
-              value={child.uid}
-            />
-          );
-        })}
-      </Picker>
+      <Item>
+        <Picker
+          mode="dropdown"
+          iosHeader="נא לבחור תשובה"
+          selectedValue={selectedValue || undefined}
+          onValueChange={handleChangeValue}
+          iosIcon={<Icon name="down" type="AntDesign" />}
+          style={{ width: screen.width * 0.8 }}
+          placeholder={"asdasdasd"}
+          placeholderStyle={{ color: "#bfc6ea" }}
+          placeholderIconColor="#007aff"
+        >
+          <Picker.Item key={"emptySelect"} label={""} value={"-1000"} />
+          {props.childComponents.children.map((child) => {
+            return (
+              <Picker.Item
+                key={child.uid}
+                label={child.label || ""}
+                value={child.uid}
+              />
+            );
+          })}
+        </Picker>
+      </Item>
     </BaseFormComponent>
   );
 };
