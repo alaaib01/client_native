@@ -11,6 +11,9 @@ import { getForms } from "../init";
 import axios, { AxiosRequestConfig } from "axios";
 import TabsScreen from "./TabsScreen";
 
+axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
+axios.defaults.headers.common['Access-Control-Allow-Methods'] = 'POST, GET, OPTIONS, PUT, DELETE';
+
 const Drawer = createDrawerNavigator();
 interface IProps {}
 
