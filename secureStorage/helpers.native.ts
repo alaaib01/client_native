@@ -1,4 +1,4 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as SecureStore from 'expo-secure-store'
 
 /**
  * save key value pair in secure store 
@@ -6,7 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
  * @param value any value
  */
 async function saveValue(key: string, value: any) {
-    await AsyncStorage.setItem(key, value);
+    await SecureStore.setItemAsync(key, value);
 }
 
 /**
@@ -15,7 +15,7 @@ async function saveValue(key: string, value: any) {
  * @returns 
  */
 async function getValueFor(key: string) {
-    let result = await AsyncStorage.getItem(key);
+    let result = await SecureStore.getItemAsync(key);
     if (result) {
         return result
     } else {

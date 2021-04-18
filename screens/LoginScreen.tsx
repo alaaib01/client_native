@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { StyleSheet, Image, ImageBackground } from "react-native";
 import Spinner from "react-native-loading-spinner-overlay";
-import { Container, Button, Text, View, Item } from "native-base";
+import { Container, Button, Text, View, Item,Input } from "native-base";
 //@ts-ignore
 import backGroundImage from "../assets/image.png";
 //@ts-ignore
@@ -106,7 +106,8 @@ const LoginScreen = (props: Props) => {
             active={false}
             textChanged={(txt) => setPassword(txt)}
           ></TextBox>
-
+      <Input placeholder={'password'} style={{direction:'rtl'}} >
+      </Input>
           <Item rounded style={styles.resultContainer}>
             <Text style={{ color: "red", textAlign: "right" }}>{errorTxt}</Text>
           </Item>
