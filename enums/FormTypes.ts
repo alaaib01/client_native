@@ -4,5 +4,6 @@ export enum FORM_TYPES{
     CHECK_BOX,
     TEXT_INPUT,
     IMAGE_UPLOADER,
+    DATE_PICKER,
     ELEMENT=1000
 }
