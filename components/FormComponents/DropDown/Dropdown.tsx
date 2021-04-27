@@ -64,8 +64,8 @@ const Dropdown = (props: Props) => {
           selectedValue={selectedValue || undefined}
           onValueChange={handleChangeValue}
           iosIcon={<Icon name="down" type="AntDesign" />}
-          style={{ width: screen.width * 0.8 }}
-          placeholder={"asdasdasd"}
+          style={{ width: screen.width * 0.8, minHeight: 70 }}
+          placeholder={"נא לבחור ערך"}
           placeholderStyle={{ color: "#bfc6ea" }}
           placeholderIconColor="#007aff"
         >

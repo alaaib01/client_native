@@ -31,6 +31,7 @@ const Calender = (props: Props) => {
   const [pickerArray, setPickerArray] = useState<JSX.Element[]>([]);
   const [selectedFormType, setSelectedFormType] = useState(undefined);
   const screen = Dimensions.get("screen");
+  const dispatch = useDispatch();
   const handleMarkList = (tasksList: TaskDTO[]) => {
     const tmpDots: IDotMark = {};
     tasksList.forEach((task) => {
@@ -46,7 +47,7 @@ const Calender = (props: Props) => {
   useEffect(() => {
     setInterval(() => {
       getTasksMarksByUserId(handleMarkList);
-    }, 60000);
+    }, 18000);
     getTasks(
       new XDate(new Date()).toDate(),
       new XDate(new Date()).addDays(7).toDate()
@@ -72,14 +73,14 @@ const Calender = (props: Props) => {
     props.setTabCount(filtered.length);
     const tmpTasks = filtered.map((task) => (
       <TaskSummary
-        key={uuidv4()}
+        key={task.id || "asd"}
         {...task.data.taskSummary}
         taskId={task.id}
         formType={task.formType}
       ></TaskSummary>
     ));
     setTasks(tmpTasks);
-    //dispatch(TASK_ACTIONS.ADD_TASKS(tasksList));
+    dispatch(TASK_ACTIONS.ADD_TASKS(tasksList));
     setAllTasks(filtered);
     setLoading(false);
   };
@@ -158,7 +159,7 @@ const Calender = (props: Props) => {
           placeholder="סוג משימה"
           placeholderStyle={{ color: "#bfc6ea" }}
           placeholderIconColor="#007aff"
-          style={{ width: screen.width - 15 }}
+          style={{ width: screen.width - 15, minHeight: 70 }}
           onValueChange={filterTasksByType}
           selectedValue={selectedFormType}
         >

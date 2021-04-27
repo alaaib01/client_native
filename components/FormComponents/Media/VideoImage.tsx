@@ -1,19 +1,19 @@
 import React, { useEffect } from "react";
-import { StyleSheet } from "react-native";
+import { StyleSheet, Image as GetImage } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { useState } from "react";
 import { COLORS } from "../../../constants/Colors";
-import { Button, H3, Icon, Text, Thumbnail, View } from "native-base";
+import { Button, H3, Icon, Image, Text, Thumbnail, View } from "native-base";
 import RightElements from "../General/RightElements";
 import VidePlayer from "./VideoPlayer";
 import * as MediaLibrary from "expo-media-library";
-import * as Permissions from "expo-permissions";
 import { IFormControlProps } from "../../../interfaces/BaseConditionalForm";
 import { useDispatch } from "react-redux";
 import STORE_CONSTS from "../../../store/Consts";
 import GetComponentFromChildren from "../General/GetComponentFromChildren";
 import BaseFormComponent from "../General/BaseFormComponent";
-
+import { Camera } from "expo-camera";
+import { Asset } from "expo-asset";
 interface Props extends IFormControlProps {}
 
 interface IMedia {
@@ -26,15 +26,15 @@ const VideoImage = (props: Props) => {
   const [videos, setVideos] = useState<IMedia[]>([]);
   const [selectedComponent, setSelectedComponent] = useState<JSX.Element>();
   const dispatch = useDispatch();
+  const [hasPermission, setHasPermission] = useState<boolean | null>(null);
 
+  useEffect(() => {
+    (async () => {
+      const { status } = await Camera.requestPermissionsAsync();
+      setHasPermission(status === "granted");
+    })();
+  }, []);
   // check permissions to camera and stoarge
-  const [permission, askForPermission] = Permissions.usePermissions(
-    [Permissions.CAMERA, Permissions.MEDIA_LIBRARY],
-    { ask: true }
-  );
-  if (!permission || permission.status !== "granted") {
-    askForPermission();
-  }
   useEffect(() => {
     valueChanged();
   }, [image, videos]);
@@ -58,15 +58,26 @@ const VideoImage = (props: Props) => {
   const saveMediaToDevice = async (result: ImagePicker.ImagePickerResult) => {
     if (result.cancelled) return;
     const asset = await MediaLibrary.createAssetAsync(result.uri);
+    console.log(result);
     if (asset.mediaType === "video") {
       setVideos((currstate) => [
         ...currstate,
-        { id: asset.id, uri: asset.uri, fileName: asset.filename },
+        {
+          id: asset.id,
+          uri: asset.uri,
+          fileName: asset.filename,
+          base64: result.base64,
+        },
       ]);
     } else {
       setImage((currstate) => [
         ...currstate,
-        { id: asset.id, uri: asset.uri, fileName: asset.filename },
+        {
+          id: asset.id,
+          uri: asset.uri,
+          fileName: asset.filename,
+          base64: result.base64,
+        },
       ]);
     }
   };
@@ -77,12 +88,22 @@ const VideoImage = (props: Props) => {
     if (result.type === "video") {
       setVideos((currstate) => [
         ...currstate,
-        { id: result.id, uri: result.uri, fileName: result.filename },
+        {
+          id: result.id,
+          uri: result.uri,
+          fileName: result.filename,
+          base64: result.base64,
+        },
       ]);
     } else {
       setImage((currstate) => [
         ...currstate,
-        { id: result.id, uri: result.uri, fileName: result.filename },
+        {
+          id: result.id,
+          uri: result.uri,
+          fileName: result.filename,
+          base64: result.base64,
+        },
       ]);
     }
   };
@@ -90,9 +111,10 @@ const VideoImage = (props: Props) => {
   const pickImage = async () => {
     let result: ImagePicker.ImagePickerResult = await ImagePicker.launchCameraAsync(
       {
-        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: true,
         quality: 0,
+        base64:true,
         videoQuality: 0,
       }
     );
@@ -101,7 +123,7 @@ const VideoImage = (props: Props) => {
   const pickImageFromGalery = async () => {
     let result: ImagePicker.ImagePickerResult = await ImagePicker.launchImageLibraryAsync(
       {
-        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
         quality: 0,
         videoQuality: 0,
         exif: true,

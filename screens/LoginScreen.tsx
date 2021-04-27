@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { StyleSheet, Image, ImageBackground } from "react-native";
 import Spinner from "react-native-loading-spinner-overlay";
-import { Container, Button, Text, View, Item,Input } from "native-base";
+import { Container, Button, Text, View, Item, Input } from "native-base";
 //@ts-ignore
 import backGroundImage from "../assets/image.png";
 //@ts-ignore
@@ -12,6 +12,8 @@ import { getValueFor, saveValue } from "../secureStorage/helpers";
 import axios, { AxiosRequestConfig } from "axios";
 import TextBox from "../components/Login/TextBox";
 import { SERVER_URL } from "../axios/Consts";
+import { CommonActions, useNavigation } from "@react-navigation/native";
+import HomeScreen from "./HomeScreen";
 interface Props {}
 
 const LoginScreen = (props: Props) => {
@@ -19,6 +21,7 @@ const LoginScreen = (props: Props) => {
   const [errorTxt, setErrorText] = useState<string>();
   const [password, setPassword] = useState<string>();
   const [loading, setLoading] = useState(false);
+  const [loggedIN, setLoggedIn] = useState(false);
   const [initializing, setInitializing] = useState(false);
   const dispatch = useDispatch();
   const initAxiosConfig = (access_token: string) => {
@@ -27,31 +30,6 @@ const LoginScreen = (props: Props) => {
       return config;
     });
   };
-
-  useEffect(() => {
-    let isMounted = true;
-    setInitializing(true);
-    // get access token from local storage
-    getValueFor("access_token").then((access_token) => {
-      axios
-        .post(SERVER_URL+"/auth/refresh", { access_token })
-        .then((result) => {
-          dispatch({
-            type: STORE_CONSTS.USER.ACTIONS.LOGIN,
-            payload: { access_token: result.data.access_token },
-          });
-          initAxiosConfig(result.data.access_token || "");
-        })
-        .catch((e) => {
-          console.log(e);
-        });
-      // if page is not mounted do not performe an state update
-      if (isMounted) setInitializing(false);
-    });
-    return () => {
-      isMounted = false;
-    };
-  }, []);
 
   const login = () => {
     {
@@ -68,16 +46,20 @@ const LoginScreen = (props: Props) => {
           setLoading(false);
           saveValue("access_token", result.data.access_token);
           initAxiosConfig(result.data.access_token);
+          setLoggedIn(true);
         })
         .catch((err) => {
           setLoading(false);
+          console.log(err);
           setErrorText("נסיון ההתחברות נכשל נא לנסות שוב ");
         });
     }
   };
+
   if (initializing) {
     return <Text>loading</Text>;
   }
+  if (loggedIN) return <HomeScreen />;
   return (
     <Container>
       <Spinner
@@ -103,11 +85,10 @@ const LoginScreen = (props: Props) => {
             icon="lock"
             iconType="FontAwesome5"
             placeHolder="סיסמה"
+            secure={true}
             active={false}
             textChanged={(txt) => setPassword(txt)}
           ></TextBox>
-      <Input placeholder={'password'} style={{direction:'rtl'}} >
-      </Input>
           <Item rounded style={styles.resultContainer}>
             <Text style={{ color: "red", textAlign: "right" }}>{errorTxt}</Text>
           </Item>

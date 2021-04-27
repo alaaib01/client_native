@@ -14,7 +14,7 @@ const taskReducer = (state = INITIAL_STATE, action: IAction) => {
             return state
         case STORE_CONSTS.TASK.ACTIONS.REMOVE_TASK:
             if (!!action.payload.key)
-                return state.tasks.slice(state.tasks.findIndex(x => x.id === action.payload.key), 1)
+                return state.tasks
             else return state
         default:
             return state

@@ -19,7 +19,7 @@ const TabsScreen = (props: Props) => {
         <Tab
           heading={
             <TabHeading>
-              <Text>מתוזמנות ({tabCounts.tab1})</Text>
+              <Text>מתוזמנות ({tabCounts.tab2})</Text>
             </TabHeading>
           }
         >
@@ -39,7 +39,7 @@ const TabsScreen = (props: Props) => {
         <Tab
           heading={
             <TabHeading>
-              <Text>מתואמות ({tabCounts.tab2})</Text>
+              <Text>מתואמות ({tabCounts.tab1})</Text>
             </TabHeading>
           }
         >

@@ -58,14 +58,14 @@ const TaskSummary = (props: Props) => {
   }
 
   return (
-    <Card>
-      <CardItem>
+    <Card> 
+      <CardItem onPress={navigateToTask} >
         <RightElements>
-          <Grid>
+          <Grid >
             <Col style={{flex:2}}>{leftCol}</Col>
             <Col style={{flex:1,justifyContent:'center'}}>
               {!props.hideBeginButton ? (
-                <Button small  onPress={navigateToTask}  bordered info>
+                <Button  onPress={navigateToTask}  bordered info>
                   <Text>
                     {FormTypeToName[props.formType?.toString() || "1"]}
                   </Text>

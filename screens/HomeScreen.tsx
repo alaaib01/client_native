@@ -11,8 +11,9 @@ import { getForms } from "../init";
 import axios, { AxiosRequestConfig } from "axios";
 import TabsScreen from "./TabsScreen";
 
-axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
-axios.defaults.headers.common['Access-Control-Allow-Methods'] = 'POST, GET, OPTIONS, PUT, DELETE';
+axios.defaults.headers.common["Access-Control-Allow-Origin"] = "*";
+axios.defaults.headers.common["Access-Control-Allow-Methods"] =
+  "POST, GET, OPTIONS, PUT, DELETE";
 
 const Drawer = createDrawerNavigator();
 interface IProps {}
@@ -33,44 +34,42 @@ const HomeScreen = (props: IProps) => {
   }, [access_token]);
 
   // if access token exists go to home page else load login screen
-  if (access_token)
-    return (
-      <NavigationContainer>
-        <Drawer.Navigator
-          screenOptions={{
-            header: ({ scene }) => {
-              const { options } = scene.descriptor;
-              const title =
-                options.headerTitle !== undefined
-                  ? options.headerTitle
-                  : options.title !== undefined
-                  ? options.title
-                  : scene.route.name;
+  return (
+    <NavigationContainer>
+      <Drawer.Navigator
+        screenOptions={{
+          header: ({ scene }) => {
+            const { options } = scene.descriptor;
+            const title =
+              options.headerTitle !== undefined
+                ? options.headerTitle
+                : options.title !== undefined
+                ? options.title
+                : scene.route.name;
 
-              return (
-                <Header
-                  title={title.toString()}
-                  toggleButton={scene.descriptor.navigation.toggleDrawer}
-                />
-              );
-            },
-          }}
-          drawerContent={(props) => <CustomDrawer {...props} />}
-        >
-          <Drawer.Screen
-            name="יומן"
-            component={TabsScreen}
-            options={{ headerShown: true }}
-          />
-          <Drawer.Screen 
-            name="משימה"
-            component={Form}
-            options={{ headerShown: false }}
-          />
-        </Drawer.Navigator>
-      </NavigationContainer>
-    );
-  else return <LoginScreen />;
+            return (
+              <Header
+                title={title.toString()}
+                toggleButton={scene.descriptor.navigation.toggleDrawer}
+              />
+            );
+          },
+        }}
+        drawerContent={(props) => <CustomDrawer {...props} />}
+      >
+        <Drawer.Screen
+          name="יומן"
+          component={TabsScreen}
+          options={{ headerShown: true }}
+        />
+        <Drawer.Screen
+          name="משימה"
+          component={Form}
+          options={{ headerShown: false }}
+        />
+      </Drawer.Navigator>
+    </NavigationContainer>
+  );
 };
 
 export default HomeScreen;

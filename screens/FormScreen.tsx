@@ -29,9 +29,10 @@ const Form = (props: Props) => {
   const [error, setError] = useState(false);
   const dispatch = useDispatch();
   const filesData = new FormData();
+
+  const navigator = useNavigation();
   // if agent press tasks without passing a task id redirect to calendar page
   if (!props.route.params || !props.route.params.task) {
-    const navigator = useNavigation();
     navigator.dispatch(
       CommonActions.navigate({
         name: "יומן",
@@ -50,6 +51,11 @@ const Form = (props: Props) => {
         type: STORE_CONSTS.FORM.ACTIONS.SET_TASK_ID,
         payload: props.route.params.task.taskId,
       });
+      dispatch({
+        type: STORE_CONSTS.FORM.ACTIONS.ADD_PROP,
+        payload: props.route.params.task,
+      });
+
       const repository = getRepository(FormDB);
       repository
         .findOne({ type: props.route.params.task.formType })
@@ -66,31 +72,29 @@ const Form = (props: Props) => {
     }
     return () => {
       setFormData([]);
+
       dispatch({ type: STORE_CONSTS.FORM.ACTIONS.SET_TASK_ID, payload: -1 });
     };
   }, [props.route.params]);
 
-  const sendFile = async (f: { id: string; uri: string; fileName: string }) => {
+  const sendFile = async (f: {
+    id: string;
+    uri: string;
+    fileName: string;
+    base64: string;
+  }) => {
     try {
-      const fileInfo = await FileSystem.getInfoAsync(f.uri);
-      if (fileInfo.exists) {
-        let fileString = await FileSystem.readAsStringAsync(f.uri, {
-          encoding: FileSystem.EncodingType.Base64,
-        });
-        let base64String = "data:image/jpg;base64" + fileString;
-        filesData.append(f.id, base64String);
-        axios
-          .post(`${SERVER_URL}/upload`, {
-            form: formValues,
-            files: filesData,
-          })
-          .then((res) => {
-           
-          })
-          .catch((err) => {});
-      }
+      let base64String = "data:image/jpg;base64" + f.base64;
+      filesData.append(f.id, base64String);
+      axios
+        .post(`${SERVER_URL}/upload`, {
+          filename: f.fileName,
+          files: filesData,
+        })
+        .then((res) => {})
+        .catch((err) => {});
     } catch (error) {
-      console.warn(error);
+      console.log(error);
       return null;
     }
   };
@@ -102,28 +106,24 @@ const Form = (props: Props) => {
     axios
       .post(`${SERVER_URL}/saveTask`, { form: formValues })
       .then((res) => {
+        navigator.dispatch(
+          CommonActions.navigate({
+            name: "יומן",
+          })
+        );
+
         dispatch({
           type: STORE_CONSTS.TASK.ACTIONS.REMOVE_TASK,
           payload: { key: props.route.params.task.taskId },
         });
       })
       .catch((err) => {
-        const assetRepo = getRepository(AssetResult);
-        const assetResult = new AssetResult();
-        assetResult.taskId = props.route.params.task.taskId;
-        assetResult.updateDate = Date.now();
-        assetResult.createDate = Date.now();
-        assetResult.data = formValues;
-        assetResult.createBy = "";
-        assetResult.updatedBy = "";
-        assetRepo
-          .save(assetResult)
-          .then((res) => {})
-          .then((err) => {});
+        console.log(err);
       });
-    formValues.images.forEach(
-      (f: { id: string; uri: string; fileName: string }) => sendFile(f)
-    );
+    dispatch({
+      type: STORE_CONSTS.TASK.ACTIONS.REMOVE_TASK,
+      payload: { key: props.route.params.task.taskId },
+    });
   };
 
   // if form is still loading display only the task summary
@@ -144,18 +144,20 @@ const Form = (props: Props) => {
           <Grid style={{ padding: 20 }}>
             {formData.map((formControl: IFormControl) => {
               return (
-                <FormComponentBuilder
-                  type={formControl.type}
-                  resetInUnmount={formControl.resetInUnmount}
-                  uid={formControl.uid}
-                  helperText={formControl.helperText}
-                  key={formControl.uid}
-                  title={formControl.title}
-                  multiLine={formControl.multiLine || false}
-                  subTitle={formControl.subTitle}
-                  childComponents={formControl.childComponents}
-                  finalStep={formControl.finalStep}
-                ></FormComponentBuilder>
+                <Row key={formControl.uid}>
+                  <FormComponentBuilder
+                    type={formControl.type}
+                    resetInUnmount={formControl.resetInUnmount}
+                    uid={formControl.uid}
+                    helperText={formControl.helperText}
+                    key={formControl.uid}
+                    title={formControl.title}
+                    multiLine={formControl.multiLine || false}
+                    subTitle={formControl.subTitle}
+                    childComponents={formControl.childComponents}
+                    finalStep={formControl.finalStep}
+                  ></FormComponentBuilder>
+                </Row>
               );
             })}
           </Grid>
